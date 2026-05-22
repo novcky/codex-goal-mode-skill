@@ -44,6 +44,7 @@ Stop task execution and repair the workflow state first if you notice:
 - `goal-current` is missing, invalid, or points to a completed goal while incomplete goals exist
 - you changed code in a git repo and are about to finish the task without a task-boundary commit or a recorded commit failure
 - you completed a checkpoint in a git repo and are about to continue without a checkpoint tracking commit or recorded commit failure
+- you are about to run final review in the same session that created a checkpoint tracking commit
 - you are about to use `goal-N task final: Final Review` instead of the final-review tracking commit message from the reference file
 - you are about to commit `tasks.md` with commit status still saying pending, ready to commit, or to be created
 - you changed code but did not update `tasks.md`
