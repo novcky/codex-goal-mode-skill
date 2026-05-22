@@ -29,6 +29,7 @@ The detailed session loop, task closure protocol, checkpoints, final review, rej
 - Verify with concrete evidence before closing a task.
 - Update `tasks.md` with work, evidence, risk, and next step.
 - Commit code changes at the task boundary when working inside a git repository, and use the final-review tracking commit only for final-review-only `tasks.md` updates.
+- Before committing `tasks.md`, make its commit-status wording durable so it remains true after the commit.
 - Stop on red flags instead of pushing ahead.
 
 ## Red Flags - STOP
@@ -43,6 +44,7 @@ Stop task execution and repair the workflow state first if you notice:
 - `goal-current` is missing, invalid, or points to a completed goal while incomplete goals exist
 - you changed code in a git repo and are about to finish the task without a task-boundary commit or a recorded commit failure
 - you are about to use `goal-N task final: Final Review` instead of the final-review tracking commit message from the reference file
+- you are about to commit `tasks.md` with commit status still saying pending, ready to commit, or to be created
 - you changed code but did not update `tasks.md`
 - `tasks.md` is missing the Runtime Contract, task status, evidence, risk, or next step fields
 - the current task requires production secrets, payment/auth changes, data deletion, or another high-risk action without explicit authorization

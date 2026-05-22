@@ -12,6 +12,7 @@ Runtime Contract:
 - Execute only the first incomplete task or required checkpoint.
 - Commit code changes at the task boundary when the project is a git repository.
 - Commit final-review-only tracking updates as `goal-N final review: complete` when the project is a git repository.
+- Commit-status text in tasks.md must remain true after the commit; do not commit pending, ready-to-commit, or to-be-created wording.
 - Do not ask the user questions; record assumptions and continue safely.
 - Before closing a task, verify with concrete evidence.
 - Update this tasks.md with work, evidence, risk, and next step.
@@ -86,7 +87,7 @@ Then:
 5. If confidence is not backed by evidence, inspect, test, review diffs/logs/types/build output, and fix issues until confidence is supported by concrete evidence.
 6. Run the Task Closure Protocol before reporting.
 7. Update `tasks.md` for the completed task with work performed, verification evidence, remaining risk, next step, and commit status.
-8. If task execution changed code inside a git repository, create one task-boundary commit after validation and the `tasks.md` update. Use commit message `goal-N task M: <task title>` and include only task-related implementation files plus the relevant goal tracking update. For the first task commit, also include the untracked initialization files from the initialization turn. If there is no git repository, record `Commit skipped: not a git repository` in `tasks.md`. If the commit fails, record the failure in `tasks.md` and stop instead of asking the user.
+8. If task execution changed code inside a git repository, create one task-boundary commit after validation and the `tasks.md` update. Use commit message `goal-N task M: <task title>` and include only task-related implementation files plus the relevant goal tracking update. For the first task commit, also include the untracked initialization files from the initialization turn. Before committing, write durable commit-status text such as `Commit status: included in task-boundary commit message "goal-N task M: <task title>"`; do not commit wording like pending, ready to commit, or to be created. If there is no git repository, record `Commit skipped: not a git repository` in `tasks.md`. If the commit fails, record the failure in `tasks.md` and stop instead of asking the user.
 9. Briefly report progress to the user, then stop output so the client can auto-advance.
 
 Do not claim confidence without evidence. Evidence can include tests, builds, type checks, diffs, logs, manual UI checks, static analysis, or other concrete verification artifacts.
@@ -100,6 +101,7 @@ Do not claim confidence without evidence. Evidence can include tests, builds, ty
 - Principle: Goal resolution. Check: Did this session resolve the active goal from `goal-current`, or repair it by selecting the highest-numbered incomplete goal? If no, stop before touching implementation.
 - Principle: Initialization boundary. Check: Did this session create goal files and also execute Task 1? If yes, stop and repair the workflow state.
 - Principle: Commit control. Check: Did this session change code in a git repo without a task-boundary commit, final-review tracking commit, or recorded commit failure? If yes, stop and repair the workflow state.
+- Principle: Durable commit status. Check: Would the committed `tasks.md` still say the commit is pending, ready to commit, or to be created after the commit succeeds? If yes, fix the wording before committing.
 - Principle: Compaction resilience. Check: Did this session read `input.md`, `plan.md`, and `tasks.md` in full? If no, read them before touching implementation.
 
 ## Task Closure Protocol
@@ -135,7 +137,7 @@ Fix high-risk issues discovered by the checkpoint before moving on, staying with
 
 When all tasks are complete, run the largest final review before marking the goal complete. Review the user-facing behavior, code quality, security, data consistency, permissions, error handling, tests, build, documentation, and rollback path.
 
-Fix known high-risk issues, rerun relevant validation, update `tasks.md`, and set `Goal status: complete`. If this final review only changed `tasks.md` inside a git repository, create one final-review tracking commit with message `goal-N final review: complete`; do not use `goal-N task final: Final Review`. If there is no git repository, record `Commit skipped: not a git repository`; if the commit fails, record the failure in `tasks.md` and stop before marking the goal complete.
+Fix known high-risk issues, rerun relevant validation, update `tasks.md`, and set `Goal status: complete`. If this final review only changed `tasks.md` inside a git repository, create one final-review tracking commit with message `goal-N final review: complete`; do not use `goal-N task final: Final Review`. Before committing, write durable final-review commit-status text such as `Commit status: included in final-review tracking commit message "goal-N final review: complete"`; do not commit pending, ready-to-commit, or to-be-created wording. If there is no git repository, record `Commit skipped: not a git repository`; if the commit fails, record the failure in `tasks.md` and stop before marking the goal complete.
 
 After final-review tracking is committed or skipped, mark the registered goal complete with available goal tooling such as `update_goal`. After the final report, stop output. The client should not continue advancing after the goal is complete.
 
@@ -153,6 +155,7 @@ Reject these before they turn into drift:
 - "This is a tiny goal, so I can initialize and execute Task 1 in one session."
 - "I can skip the task-boundary commit because the change is small."
 - "Final review is basically a task, so `goal-N task final: Final Review` is fine."
+- "I'll leave commit status as pending and fix it after the commit."
 
 ## AAR Questions
 
