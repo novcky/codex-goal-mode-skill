@@ -1,6 +1,6 @@
 ---
 name: goal-mode
-description: Unattended goal workflow for Codex. Use only when the user explicitly includes `/goal` or asks to enter goal mode. Initializes goal-N files before edits, registers available goal/task tools, runs one task per session, stops on red flags, verifies concrete evidence, updates tasks.md, and continues until complete.
+description: Unattended goal workflow for Codex. Use only when the user explicitly includes `/goal` or asks to enter goal mode. Initializes goal-N files and a goal-current pointer before edits, runs one task per session, stops on red flags, verifies concrete evidence, updates tasks.md, and continues until complete.
 ---
 
 # Goal Mode
@@ -20,10 +20,12 @@ Before any initialization or task execution, read [references/goal-workflow.md](
 The detailed session loop, task closure protocol, checkpoints, final review, rejected rationalizations, and AAR questions live in the reference file.
 
 - On the first goal-mode turn, initialize the goal and end with `GOAL_INIT_DONE`.
+- Maintain `goal-current` so later sessions can resolve the active goal directory.
 - Start each generated `tasks.md` with the runtime contract block from the reference file.
 - Execute only one task per session.
 - Verify with concrete evidence before closing a task.
 - Update `tasks.md` with work, evidence, risk, and next step.
+- Do not create git commits unless the user's goal explicitly asks for commits.
 - Stop on red flags instead of pushing ahead.
 
 ## Red Flags - STOP
@@ -34,6 +36,8 @@ Stop task execution and repair the workflow state first if you notice:
 - you are about to execute a second task in the same session
 - you are about to ask the user a question instead of recording an assumption
 - you started a new session or resumed after compaction without rereading all three goal files
+- `goal-current` is missing, invalid, or points to a completed goal while incomplete goals exist
+- you are about to create a git commit without an explicit user request to commit
 - you changed code but did not update `tasks.md`
 - `tasks.md` is missing the Runtime Contract, task status, evidence, risk, or next step fields
 - the current task requires production secrets, payment/auth changes, data deletion, or another high-risk action without explicit authorization
@@ -50,6 +54,7 @@ In goal mode, do not:
 - ask the user questions
 - break network connectivity
 - edit code before initialization files exist
+- create git commits unless the user explicitly requested commits
 - execute more than one task per session
 - expand scope without recording a default assumption and rationale
 - delete important data without an explicit requirement and safe rollback plan

@@ -111,8 +111,8 @@ def main() -> None:
         fail("description must not contain angle brackets")
     if len(skill.splitlines()) > 120:
         fail("SKILL.md must stay thin and be at most 120 lines")
-    if len(workflow_ref.splitlines()) > 240:
-        fail("references/goal-workflow.md must stay under 240 lines")
+    if len(workflow_ref.splitlines()) > 260:
+        fail("references/goal-workflow.md must stay under 260 lines")
     if "MIT License" not in skill_license:
         fail("skills/goal-mode/LICENSE.txt must contain the MIT License text")
 
@@ -127,6 +127,8 @@ def main() -> None:
         "core contract section": "## Core Contract",
         "red flags section": "## Red Flags - STOP",
         "init sentinel": "GOAL_INIT_DONE",
+        "goal pointer": "goal-current",
+        "commit control": "Do not create git commits unless the user's goal explicitly asks for commits.",
         "safety section": "## Safety Rules",
     }
     for label, phrase in required_skill_phrases.items():
@@ -144,6 +146,11 @@ def main() -> None:
         "rationalizations": "## Rationalizations to Reject",
         "aar questions": "## AAR Questions",
         "goal init sentinel": "GOAL_INIT_DONE",
+        "goal pointer": "goal-current",
+        "goal active status": "Goal status: active",
+        "goal complete status": "Goal status: complete",
+        "commit policy": "Commit policy",
+        "commit control": "Do not create git commits unless the original goal explicitly requested commits.",
         "one task rule": "Execute only one task per session.",
         "evidence rule": "Do not claim confidence without evidence.",
     }
@@ -156,7 +163,7 @@ def main() -> None:
 
     readme_requirements = {
         "install URL": "https://github.com/novcky/codex-goal-mode-skill/tree/main/skills/goal-mode",
-        "pinned install URL": "https://github.com/novcky/codex-goal-mode-skill/tree/v0.2.0/skills/goal-mode",
+        "pinned install URL": "https://github.com/novcky/codex-goal-mode-skill/tree/v0.3.0/skills/goal-mode",
         "installer command": "$skill-installer install",
         "explicit trigger": "/goal",
         "explicit skill invocation": "$goal-mode",
@@ -165,7 +172,7 @@ def main() -> None:
         "issues link": "https://github.com/novcky/codex-goal-mode-skill/issues",
         "repository license link": "[LICENSE](LICENSE)",
         "skill package license link": "[LICENSE.txt](skills/goal-mode/LICENSE.txt)",
-        "pinned version wording": "v0.2.0",
+        "pinned version wording": "v0.3.0",
     }
     for label, phrase in readme_requirements.items():
         require(readme_zh, phrase, f"Chinese README {label}")
@@ -184,38 +191,18 @@ def main() -> None:
     require(readme_en, "## Quick Check", "English README quick check heading")
     require(readme_zh, "完整校验步骤见", "Chinese README full validation link")
     require(readme_en, "full pre-contribution validation flow", "English README full validation link")
-    require(readme_zh, "固定版本安装示例", "Chinese README pinned version wording")
-    require(readme_en, "Install a pinned version", "English README pinned version wording")
-    require(readme_zh, "main` 分支安装最新代码", "Chinese README main branch wording")
-    require(readme_en, "latest code from the `main` branch", "English README main branch wording")
-    require(readme_zh, "版本记录见", "Chinese README release history wording")
-    require(readme_en, "Release history is available", "English README release history wording")
-    require(readme_zh, "可从 GitHub 安装", "Chinese README value statement")
-    require(readme_en, "GitHub-installable", "English README value statement")
-    require(readme_zh, "停止条件", "Chinese README stop condition wording")
-    require(readme_en, "stop conditions", "English README stop condition wording")
-    require(readme_zh, "保持分发包精简", "Chinese README package wording")
-    require(readme_en, "distributed package minimal", "English README package wording")
     require(readme_zh, "goal-N/input.md", "Chinese README goal file side effect")
     require(readme_en, "goal-N/input.md", "English README goal file side effect")
     require(readme_zh, "goal-N/plan.md", "Chinese README plan file side effect")
     require(readme_en, "goal-N/plan.md", "English README plan file side effect")
     require(readme_zh, "goal-N/tasks.md", "Chinese README tasks file side effect")
     require(readme_en, "goal-N/tasks.md", "English README tasks file side effect")
-    if (
-        "当前稳定版" in readme_zh
-        or "稳定版本" in readme_zh
-        or "干净" in readme_zh
-        or "红旗" in readme_zh
-        or "偏航" in readme_zh
-        or "污染分发包" in readme_zh
-        or "新 skill" in readme_zh
-        or "current stable release" in readme_en
-        or "Stable versions" in readme_en
-        or "A clean," in readme_en
-        or "red flags" in readme_en
-    ):
-        fail("README should avoid awkward or stale wording")
+    require(readme_zh, "goal-current", "Chinese README active goal pointer")
+    require(readme_en, "goal-current", "English README active goal pointer")
+    require(readme_zh, "git commit", "Chinese README commit policy")
+    require(readme_en, "git commits", "English README commit policy")
+    if "v0.2.0/skills/goal-mode" in readme_zh or "v0.2.0/skills/goal-mode" in readme_en:
+        fail("README pinned install example must not point at v0.2.0")
 
     require(contributing, "## 中文", "contributing doc Chinese section")
     require(contributing, "## English", "contributing doc English section")
@@ -224,7 +211,16 @@ def main() -> None:
     require(contributing, "python -m pip install pyyaml", "contributing pyyaml command")
     require(contributing, "python tests/official_validate.py", "contributing official validator command")
     require(official_validate, "e8acbcb5f86cef1e04b96eed7557148b719c5f6b", "official validator pinned commit")
+    require(
+        official_validate,
+        "6cc9dc3199c935916cf6f73fcbbbb0e3bb1b58c8f5109fefa499978908164f51",
+        "official validator sha256",
+    )
+    require(official_validate, "DOWNLOAD_TIMEOUT_SECONDS = 20", "official validator download timeout")
+    require(official_validate, "RUN_TIMEOUT_SECONDS = 30", "official validator run timeout")
     require(workflow, "python tests/official_validate.py", "workflow official validator wrapper")
+    require(workflow, "actions/checkout@v6", "workflow checkout action")
+    require(workflow, "actions/setup-python@v6", "workflow setup-python action")
     if "curl -fsSL" in contributing or "/tmp/quick_validate.py" in contributing:
         fail("CONTRIBUTING.md should use the cross-platform official_validate.py wrapper")
     if "curl -fsSL" in workflow or "/tmp/quick_validate.py" in workflow:

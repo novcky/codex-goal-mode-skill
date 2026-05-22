@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import subprocess
 import sys
 import tempfile
@@ -17,6 +18,9 @@ VALIDATOR_URL = (
     "e8acbcb5f86cef1e04b96eed7557148b719c5f6b/"
     "skills/.system/skill-creator/scripts/quick_validate.py"
 )
+VALIDATOR_SHA256 = "6cc9dc3199c935916cf6f73fcbbbb0e3bb1b58c8f5109fefa499978908164f51"
+DOWNLOAD_TIMEOUT_SECONDS = 20
+RUN_TIMEOUT_SECONDS = 30
 
 
 def fail(message: str) -> None:
@@ -36,11 +40,24 @@ def main() -> None:
     with tempfile.TemporaryDirectory(prefix="goal-mode-official-validate-") as tmp:
         validator = Path(tmp) / "quick_validate.py"
         try:
-            urllib.request.urlretrieve(VALIDATOR_URL, validator)
+            with urllib.request.urlopen(VALIDATOR_URL, timeout=DOWNLOAD_TIMEOUT_SECONDS) as response:
+                data = response.read()
         except Exception as exc:  # pragma: no cover - network failure detail
             fail(f"failed to download official validator: {exc}")
 
-        result = subprocess.run([sys.executable, str(validator), str(SKILL_DIR)], check=False)
+        digest = hashlib.sha256(data).hexdigest()
+        if digest != VALIDATOR_SHA256:
+            fail(f"official validator sha256 mismatch: {digest}")
+        validator.write_bytes(data)
+
+        try:
+            result = subprocess.run(
+                [sys.executable, str(validator), str(SKILL_DIR)],
+                check=False,
+                timeout=RUN_TIMEOUT_SECONDS,
+            )
+        except subprocess.TimeoutExpired:
+            fail(f"official validator timed out after {RUN_TIMEOUT_SECONDS} seconds")
         if result.returncode != 0:
             raise SystemExit(result.returncode)
 

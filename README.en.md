@@ -17,7 +17,7 @@ $skill-installer install https://github.com/novcky/codex-goal-mode-skill/tree/ma
 Install a pinned version:
 
 ```text
-$skill-installer install https://github.com/novcky/codex-goal-mode-skill/tree/v0.2.0/skills/goal-mode
+$skill-installer install https://github.com/novcky/codex-goal-mode-skill/tree/v0.3.0/skills/goal-mode
 ```
 
 Restart Codex after installation so the new skill is loaded.
@@ -35,7 +35,9 @@ The installed skill name is `goal-mode`, and the explicit skill invocation is `$
 ## How It Works
 
 - The first `/goal` turn creates `goal-N/input.md`, `goal-N/plan.md`, and `goal-N/tasks.md` under the current project root.
+- It also maintains a project-root `goal-current` pointer so later sessions can resume the active goal.
 - Later turns read those three files, advance only one incomplete task from `tasks.md`, and record validation evidence, remaining risk, and the next step.
+- It does not create git commits by default; commits happen only when the `/goal` request explicitly asks for them.
 - When a stop condition appears, task execution pauses until the workflow state is repaired or the blocker is recorded.
 
 ## Core Layout

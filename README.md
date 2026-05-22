@@ -17,7 +17,7 @@ $skill-installer install https://github.com/novcky/codex-goal-mode-skill/tree/ma
 固定版本安装示例：
 
 ```text
-$skill-installer install https://github.com/novcky/codex-goal-mode-skill/tree/v0.2.0/skills/goal-mode
+$skill-installer install https://github.com/novcky/codex-goal-mode-skill/tree/v0.3.0/skills/goal-mode
 ```
 
 安装后重启 Codex，让新 Skill 生效。
@@ -35,7 +35,9 @@ $skill-installer install https://github.com/novcky/codex-goal-mode-skill/tree/v0
 ## 工作方式
 
 - 首次 `/goal` 会在当前项目根目录创建 `goal-N/input.md`、`goal-N/plan.md` 和 `goal-N/tasks.md`。
+- 同时会维护项目根目录的 `goal-current`，用于后续会话恢复当前活动目标。
 - 后续每轮会读取这三份文件，只推进 `tasks.md` 中的一个未完成任务，并记录验证证据、剩余风险和下一步。
+- 默认不会创建 git commit；只有 `/goal` 请求明确要求提交时才会提交。
 - 触发停止条件时会暂停任务执行，先修复工作流状态或记录阻塞原因。
 
 ## 核心结构
