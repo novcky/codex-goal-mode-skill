@@ -133,7 +133,9 @@ def main() -> None:
         "strict initialization boundary": "The initialization turn must not edit target project files, validate task work, execute Task 1, close tasks, or run final review.",
         "same-session task red flag": "you are about to execute Task 1 in the same session that created `goal-current` or `goal-N/`",
         "goal pointer": "goal-current",
-        "automatic task-boundary commit": "Commit code changes at the task boundary when working inside a git repository.",
+        "automatic task-boundary commit": "Commit code changes at the task boundary when working inside a git repository",
+        "final review tracking commit": "final-review tracking commit only for final-review-only `tasks.md` updates",
+        "task final red flag": "you are about to use `goal-N task final: Final Review`",
         "commit failure red flag": "task-boundary commit or a recorded commit failure",
         "safety section": "## Safety Rules",
     }
@@ -161,7 +163,11 @@ def main() -> None:
         "goal_context objective extraction": "write the `objective` text as the goal prompt",
         "goal_context source note": "Source: Codex goal_context",
         "commit policy": "commit code changes at the task boundary when the project is a git repository",
+        "final review commit policy": "Commit final-review-only tracking updates as `goal-N final review: complete` when the project is a git repository.",
         "task-boundary commit format": "goal-N task M: <task title>",
+        "first task includes init files": "include the untracked initialization files from the initialization turn",
+        "final review commit format": "goal-N final review: complete",
+        "task final banned": "do not use `goal-N task final: Final Review`",
         "commit skipped non-git": "Commit skipped: not a git repository",
         "commit failure handling": "If the commit fails, record the failure in `tasks.md` and stop instead of asking the user.",
         "one task rule": "Execute only one task per session.",
@@ -230,6 +236,12 @@ def main() -> None:
     require(readme_en, "later sessions start Task 1", "English README delayed task execution")
     require(readme_zh, "task 边界提交", "Chinese README task-boundary commit policy")
     require(readme_en, "task-boundary commit", "English README task-boundary commit policy")
+    require(readme_zh, "首轮初始化文件不会单独提交", "Chinese README initialization commit policy")
+    require(readme_en, "Initialization files are not committed on the first turn", "English README initialization commit policy")
+    require(readme_zh, "goal-N final review: complete", "Chinese README final-review commit message")
+    require(readme_en, "goal-N final review: complete", "English README final-review commit message")
+    if "goal-N task final: Final Review" in readme_zh + readme_en:
+        fail("README must not document the old task-final commit format")
     if "v0.2.0/skills/goal-mode" in readme_zh or "v0.2.0/skills/goal-mode" in readme_en:
         fail("README pinned install example must not point at v0.2.0")
     if re.search(r"tree/v[0-9]+\.[0-9]+\.[0-9]+/skills/goal-mode", readme_zh + readme_en):

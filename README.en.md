@@ -50,6 +50,8 @@ The installed skill name is `goal-mode`, and the explicit skill invocation is `$
 - It also maintains a project-root `goal-current` pointer so later sessions can resume the active goal.
 - Later turns read those three files, advance only one incomplete task from `tasks.md`, and record validation evidence, remaining risk, and the next step.
 - If the current project is a git repository and a task changes code, it creates one task-boundary commit after validation and the `tasks.md` update.
+- Initialization files are not committed on the first turn; in git repositories, they are included in the first task-boundary commit.
+- If final review only updates `tasks.md`, it creates a final-review tracking commit named `goal-N final review: complete`.
 - When a stop condition appears, task execution pauses until the workflow state is repaired or the blocker is recorded.
 
 ## Core Layout
