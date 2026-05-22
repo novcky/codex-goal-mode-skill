@@ -1,6 +1,6 @@
 ---
 name: goal-mode
-description: Unattended goal workflow for Codex. Use only when the user explicitly includes `/goal` or explicitly says to enter goal mode. Initialize goal files before code edits, write a runtime contract into tasks.md, register the goal with available built-in goal/task tools, execute one task per session, stop on red flags, verify with concrete evidence, update tasks.md, and continue until the goal is complete.
+description: Unattended goal workflow for Codex. Use only when the user explicitly includes `/goal` or asks to enter goal mode. Initializes goal-N files before edits, registers available goal/task tools, runs one task per session, stops on red flags, verifies concrete evidence, updates tasks.md, and continues until complete.
 ---
 
 # Goal Mode
