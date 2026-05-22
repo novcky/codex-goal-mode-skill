@@ -1,29 +1,47 @@
 # Codex Goal Mode Skill
 
-A clean, distributable Codex skill for unattended long-running goal workflows.
+[English](README.en.md)
 
-Use `goal-mode` when a user explicitly starts a goal with `/goal`. The skill initializes durable goal files, runs one verifiable task per session, records evidence and risk, and stops on red flags instead of drifting through unattended work.
+一个干净、可分发的 Codex Skill，用于无人值守的长期目标工作流。
 
-## Install
+当用户明确使用 `/goal` 启动目标时，`goal-mode` 会初始化可持久化的目标文件，每轮只执行一个可验证任务，记录证据与风险，并在出现红旗时停止，避免无人值守任务偏航。
 
-In Codex, install from GitHub with:
+## 安装
+
+在 Codex 中使用 `$skill-installer` 从 GitHub 安装：
 
 ```text
 Use $skill-installer to install https://github.com/novcky/codex-goal-mode-skill/tree/main/skills/goal-mode
 ```
 
-Restart Codex after installation so the new skill is loaded.
+安装后重启 Codex，让新 skill 生效。
 
-## Use
+## 使用
 
 ```text
-/goal Build the feature, validate it, and keep advancing until complete.
+/goal 实现这个功能，完成验证，并持续推进直到目标完成。
 ```
 
-The installed skill name is `goal-mode`, and the explicit skill invocation is `$goal-mode`.
+安装后的 skill 名称是 `goal-mode`，显式调用方式是 `$goal-mode`。
 
-## Validate
+## 仓库结构
+
+```text
+skills/goal-mode/
+  SKILL.md
+  agents/openai.yaml
+tests/
+  validate_skill.py
+```
+
+`skills/goal-mode/` 是实际可安装的 skill 包。README、测试和 CI 只放在仓库级，避免污染分发包。
+
+## 验证
 
 ```bash
 python tests/validate_skill.py
 ```
+
+## 许可证
+
+MIT
