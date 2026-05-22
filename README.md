@@ -24,6 +24,22 @@ $skill-installer install https://github.com/novcky/codex-goal-mode-skill/tree/v0
 
 版本记录见 [Releases](https://github.com/novcky/codex-goal-mode-skill/releases)。
 
+## 更新
+
+`$skill-installer` 不会覆盖已存在的 Skill 目录。更新前先删除旧版本：
+
+```powershell
+Remove-Item -Recurse -Force "$env:USERPROFILE\.codex\skills\goal-mode"
+```
+
+macOS / Linux：
+
+```bash
+rm -rf ~/.codex/skills/goal-mode
+```
+
+然后重新运行安装命令，并重启 Codex。
+
 ## 使用
 
 ```text

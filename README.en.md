@@ -24,6 +24,22 @@ Restart Codex after installation so the new skill is loaded.
 
 Release history is available under [Releases](https://github.com/novcky/codex-goal-mode-skill/releases).
 
+## Update
+
+`$skill-installer` does not overwrite an existing skill directory. Before updating, remove the old installation:
+
+```powershell
+Remove-Item -Recurse -Force "$env:USERPROFILE\.codex\skills\goal-mode"
+```
+
+macOS / Linux:
+
+```bash
+rm -rf ~/.codex/skills/goal-mode
+```
+
+Then run the install command again and restart Codex.
+
 ## Use
 
 ```text
