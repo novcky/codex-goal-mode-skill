@@ -137,6 +137,8 @@ Fix high-risk issues discovered by the checkpoint before moving on, staying with
 
 If the checkpoint only updates `tasks.md` inside a git repository, create one checkpoint tracking commit before moving on. Use message `goal-N checkpoint after task M: complete`, where `M` is the completed task count that triggered the checkpoint. Before committing, write durable checkpoint commit-status text such as `Commit status: included in checkpoint tracking commit message "goal-N checkpoint after task M: complete"`; do not commit pending, ready-to-commit, or to-be-created wording. If there is no git repository, record `Commit skipped: not a git repository`; if the commit fails, record the failure in `tasks.md` and stop before moving on. After the checkpoint tracking commit succeeds or is skipped, stop immediately; final review must wait for the next goal-mode session.
 
+During a checkpoint-only session, do not edit `plan.md`, `input.md`, or implementation files. If a checkpoint discovers tracking drift, stale project paths, or documentation mismatch outside `tasks.md`, record the finding and next action in `tasks.md` instead of changing those files. Stage only `goal-N/tasks.md` for the checkpoint tracking commit. After committing, verify `git log -1 --oneline` shows `goal-N checkpoint after task M: complete` before reporting success. If the commit is missing, update `tasks.md` to record the commit failure and stop; do not leave `tasks.md` claiming the checkpoint commit exists.
+
 ## Final Review
 
 When all tasks are complete, run the largest final review before marking the goal complete. Review the user-facing behavior, code quality, security, data consistency, permissions, error handling, tests, build, documentation, and rollback path.
@@ -160,6 +162,8 @@ Reject these before they turn into drift:
 - "I can skip the task-boundary commit because the change is small."
 - "A checkpoint only changed tasks.md, so it does not need a tracking commit."
 - "The checkpoint commit succeeded, so I can run final review in the same session."
+- "I can fix plan.md during a checkpoint because it is only tracking metadata."
+- "The checkpoint commit probably succeeded, so tasks.md can say it exists."
 - "Final review is basically a task, so `goal-N task final: Final Review` is fine."
 - "I'll leave commit status as pending and fix it after the commit."
 
