@@ -14,15 +14,9 @@
 $skill-installer install https://github.com/novcky/codex-goal-mode-skill/tree/main/skills/goal-mode
 ```
 
-固定版本安装示例：
-
-```text
-$skill-installer install https://github.com/novcky/codex-goal-mode-skill/tree/v0.3.2/skills/goal-mode
-```
-
 安装后重启 Codex，让新 Skill 生效。
 
-版本记录见 [Releases](https://github.com/novcky/codex-goal-mode-skill/releases)。
+需要固定到某个版本时，可在 [Releases](https://github.com/novcky/codex-goal-mode-skill/releases) 中选择对应 tag。
 
 ## 更新
 
@@ -38,7 +32,7 @@ macOS / Linux：
 rm -rf ~/.codex/skills/goal-mode
 ```
 
-然后重新运行安装命令，并重启 Codex。
+然后重新运行上面的安装命令，并重启 Codex。
 
 ## 使用
 

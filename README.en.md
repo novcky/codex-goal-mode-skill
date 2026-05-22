@@ -14,15 +14,9 @@ In Codex, install the latest code from the `main` branch with `$skill-installer`
 $skill-installer install https://github.com/novcky/codex-goal-mode-skill/tree/main/skills/goal-mode
 ```
 
-Install a pinned version:
-
-```text
-$skill-installer install https://github.com/novcky/codex-goal-mode-skill/tree/v0.3.2/skills/goal-mode
-```
-
 Restart Codex after installation so the new skill is loaded.
 
-Release history is available under [Releases](https://github.com/novcky/codex-goal-mode-skill/releases).
+To pin a specific version, choose the corresponding tag under [Releases](https://github.com/novcky/codex-goal-mode-skill/releases).
 
 ## Update
 
@@ -38,7 +32,7 @@ macOS / Linux:
 rm -rf ~/.codex/skills/goal-mode
 ```
 
-Then run the install command again and restart Codex.
+Then run the install command above again and restart Codex.
 
 ## Use
 

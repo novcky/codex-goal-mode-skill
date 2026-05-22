@@ -168,7 +168,6 @@ def main() -> None:
 
     readme_requirements = {
         "install URL": "https://github.com/novcky/codex-goal-mode-skill/tree/main/skills/goal-mode",
-        "pinned install URL": "https://github.com/novcky/codex-goal-mode-skill/tree/v0.3.2/skills/goal-mode",
         "installer command": "$skill-installer install",
         "explicit trigger": "/goal",
         "explicit skill invocation": "$goal-mode",
@@ -177,7 +176,6 @@ def main() -> None:
         "issues link": "https://github.com/novcky/codex-goal-mode-skill/issues",
         "repository license link": "[LICENSE](LICENSE)",
         "skill package license link": "[LICENSE.txt](skills/goal-mode/LICENSE.txt)",
-        "pinned version wording": "v0.3.2",
     }
     for label, phrase in readme_requirements.items():
         require(readme_zh, phrase, f"Chinese README {label}")
@@ -198,6 +196,8 @@ def main() -> None:
     require(readme_en, "## Update", "English README update heading")
     require(readme_zh, "不会覆盖已存在的 Skill 目录", "Chinese README installer overwrite note")
     require(readme_en, "does not overwrite an existing skill directory", "English README installer overwrite note")
+    require(readme_zh, "重新运行上面的安装命令", "Chinese README update reinstall wording")
+    require(readme_en, "run the install command above again", "English README update reinstall wording")
     require(readme_zh, 'Remove-Item -Recurse -Force "$env:USERPROFILE\\.codex\\skills\\goal-mode"', "Chinese README Windows update remove command")
     require(readme_en, 'Remove-Item -Recurse -Force "$env:USERPROFILE\\.codex\\skills\\goal-mode"', "English README Windows update remove command")
     require(readme_zh, "rm -rf ~/.codex/skills/goal-mode", "Chinese README Unix update remove command")
@@ -220,6 +220,8 @@ def main() -> None:
     require(readme_en, "git commits", "English README commit policy")
     if "v0.2.0/skills/goal-mode" in readme_zh or "v0.2.0/skills/goal-mode" in readme_en:
         fail("README pinned install example must not point at v0.2.0")
+    if re.search(r"tree/v[0-9]+\.[0-9]+\.[0-9]+/skills/goal-mode", readme_zh + readme_en):
+        fail("README should not include a version-pinned install command; link to Releases instead")
 
     require(contributing, "## 中文", "contributing doc Chinese section")
     require(contributing, "## English", "contributing doc English section")
