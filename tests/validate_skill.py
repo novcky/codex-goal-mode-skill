@@ -18,6 +18,8 @@ README_ZH = ROOT / "README.md"
 README_EN = ROOT / "README.en.md"
 CONTRIBUTING = ROOT / "CONTRIBUTING.md"
 SECURITY = ROOT / "SECURITY.md"
+OFFICIAL_VALIDATE = ROOT / "tests" / "official_validate.py"
+WORKFLOW = ROOT / ".github" / "workflows" / "validate.yml"
 
 
 def fail(message: str) -> None:
@@ -67,6 +69,10 @@ def main() -> None:
         fail("CONTRIBUTING.md is missing")
     if not SECURITY.exists():
         fail("SECURITY.md is missing")
+    if not OFFICIAL_VALIDATE.exists():
+        fail("tests/official_validate.py is missing")
+    if not WORKFLOW.exists():
+        fail(".github/workflows/validate.yml is missing")
     expected_files = {
         Path("SKILL.md"),
         Path("agents/openai.yaml"),
@@ -87,6 +93,8 @@ def main() -> None:
     readme_en = README_EN.read_text(encoding="utf-8")
     contributing = CONTRIBUTING.read_text(encoding="utf-8")
     security = SECURITY.read_text(encoding="utf-8")
+    official_validate = OFFICIAL_VALIDATE.read_text(encoding="utf-8")
+    workflow = WORKFLOW.read_text(encoding="utf-8")
     frontmatter = parse_frontmatter(skill)
 
     name = frontmatter.get("name")
@@ -149,11 +157,14 @@ def main() -> None:
     readme_requirements = {
         "install URL": "https://github.com/novcky/codex-goal-mode-skill/tree/main/skills/goal-mode",
         "pinned install URL": "https://github.com/novcky/codex-goal-mode-skill/tree/v0.2.0/skills/goal-mode",
-        "installer skill": "$skill-installer",
+        "installer command": "$skill-installer install",
         "explicit trigger": "/goal",
         "explicit skill invocation": "$goal-mode",
         "validation command": "python tests/validate_skill.py",
         "releases link": "https://github.com/novcky/codex-goal-mode-skill/releases",
+        "issues link": "https://github.com/novcky/codex-goal-mode-skill/issues",
+        "repository license link": "[LICENSE](LICENSE)",
+        "skill package license link": "[LICENSE.txt](skills/goal-mode/LICENSE.txt)",
         "pinned version wording": "v0.2.0",
     }
     for label, phrase in readme_requirements.items():
@@ -163,28 +174,69 @@ def main() -> None:
     require(readme_en, "[中文](README.md)", "English README language link")
     require(readme_zh, "references/goal-workflow.md", "Chinese README repository structure")
     require(readme_en, "references/goal-workflow.md", "English README repository structure")
+    require(readme_zh, "official_validate.py", "Chinese README official validator script")
+    require(readme_en, "official_validate.py", "English README official validator script")
     require(readme_zh, "CONTRIBUTING.md", "Chinese README contributing link")
     require(readme_en, "CONTRIBUTING.md", "English README contributing link")
     require(readme_zh, "SECURITY.md", "Chinese README security link")
     require(readme_en, "SECURITY.md", "English README security link")
+    require(readme_zh, "## 快速自检", "Chinese README quick check heading")
+    require(readme_en, "## Quick Check", "English README quick check heading")
+    require(readme_zh, "完整校验步骤见", "Chinese README full validation link")
+    require(readme_en, "full pre-contribution validation flow", "English README full validation link")
     require(readme_zh, "固定版本安装示例", "Chinese README pinned version wording")
     require(readme_en, "Install a pinned version", "English README pinned version wording")
     require(readme_zh, "main` 分支安装最新代码", "Chinese README main branch wording")
     require(readme_en, "latest code from the `main` branch", "English README main branch wording")
     require(readme_zh, "版本记录见", "Chinese README release history wording")
     require(readme_en, "Release history is available", "English README release history wording")
+    require(readme_zh, "可从 GitHub 安装", "Chinese README value statement")
+    require(readme_en, "GitHub-installable", "English README value statement")
+    require(readme_zh, "停止条件", "Chinese README stop condition wording")
+    require(readme_en, "stop conditions", "English README stop condition wording")
+    require(readme_zh, "保持分发包精简", "Chinese README package wording")
+    require(readme_en, "distributed package minimal", "English README package wording")
+    require(readme_zh, "goal-N/input.md", "Chinese README goal file side effect")
+    require(readme_en, "goal-N/input.md", "English README goal file side effect")
+    require(readme_zh, "goal-N/plan.md", "Chinese README plan file side effect")
+    require(readme_en, "goal-N/plan.md", "English README plan file side effect")
+    require(readme_zh, "goal-N/tasks.md", "Chinese README tasks file side effect")
+    require(readme_en, "goal-N/tasks.md", "English README tasks file side effect")
     if (
         "当前稳定版" in readme_zh
         or "稳定版本" in readme_zh
+        or "干净" in readme_zh
+        or "红旗" in readme_zh
+        or "偏航" in readme_zh
+        or "污染分发包" in readme_zh
+        or "新 skill" in readme_zh
         or "current stable release" in readme_en
         or "Stable versions" in readme_en
+        or "A clean," in readme_en
+        or "red flags" in readme_en
     ):
-        fail("README should avoid stable/current-stable wording for pinned install examples")
+        fail("README should avoid awkward or stale wording")
 
     require(contributing, "## 中文", "contributing doc Chinese section")
     require(contributing, "## English", "contributing doc English section")
+    require(contributing, "python tests/validate_skill.py", "contributing repository validator command")
+    require(contributing, "python tests/install_smoke.py", "contributing install smoke command")
+    require(contributing, "python -m pip install pyyaml", "contributing pyyaml command")
+    require(contributing, "python tests/official_validate.py", "contributing official validator command")
+    require(official_validate, "e8acbcb5f86cef1e04b96eed7557148b719c5f6b", "official validator pinned commit")
+    require(workflow, "python tests/official_validate.py", "workflow official validator wrapper")
+    if "curl -fsSL" in contributing or "/tmp/quick_validate.py" in contributing:
+        fail("CONTRIBUTING.md should use the cross-platform official_validate.py wrapper")
+    if "curl -fsSL" in workflow or "/tmp/quick_validate.py" in workflow:
+        fail("CI should use the cross-platform official_validate.py wrapper")
     require(security, "## 中文", "security doc Chinese section")
     require(security, "## English", "security doc English section")
+    require(
+        security,
+        "https://github.com/novcky/codex-goal-mode-skill/security/advisories/new",
+        "security private vulnerability report link",
+    )
+    require(security, "https://github.com/novcky/codex-goal-mode-skill/issues", "security issue fallback link")
 
     disallowed_skill_files = {"README.md", "INSTALLATION_GUIDE.md", "QUICK_REFERENCE.md", "CHANGELOG.md"}
     for path in SKILL_DIR.rglob("*"):
