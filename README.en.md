@@ -48,8 +48,10 @@ tests/
 ## Validate
 
 ```bash
-uv run python tests/validate_skill.py
+python tests/validate_skill.py
 ```
+
+If you prefer `uv`, you can also run `uv run python tests/validate_skill.py`.
 
 ## License
 

@@ -4,6 +4,9 @@ on:
   push:
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   validate:
     runs-on: ubuntu-latest
@@ -19,5 +22,5 @@ jobs:
       - name: Run official skill validator
         run: |
           python -m pip install pyyaml
-          curl -fsSL https://raw.githubusercontent.com/openai/skills/main/skills/.system/skill-creator/scripts/quick_validate.py -o /tmp/quick_validate.py
+          curl -fsSL https://raw.githubusercontent.com/openai/skills/e8acbcb5f86cef1e04b96eed7557148b719c5f6b/skills/.system/skill-creator/scripts/quick_validate.py -o /tmp/quick_validate.py
           python /tmp/quick_validate.py skills/goal-mode

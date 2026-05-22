@@ -48,8 +48,10 @@ tests/
 ## 验证
 
 ```bash
-uv run python tests/validate_skill.py
+python tests/validate_skill.py
 ```
+
+如果你在本地习惯用 `uv`，也可以运行 `uv run python tests/validate_skill.py`。
 
 ## 许可证
 

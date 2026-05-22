@@ -137,7 +137,7 @@ def main() -> None:
         "installer skill": "$skill-installer",
         "explicit trigger": "/goal",
         "explicit skill invocation": "$goal-mode",
-        "validation command": "uv run python tests/validate_skill.py",
+        "validation command": "python tests/validate_skill.py",
         "releases link": "https://github.com/novcky/codex-goal-mode-skill/releases",
     }
     for label, phrase in readme_requirements.items():
