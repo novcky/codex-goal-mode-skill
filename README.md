@@ -8,13 +8,21 @@
 
 ## 安装
 
-在 Codex 中使用 `$skill-installer` 从 GitHub 安装：
+在 Codex 中使用 `$skill-installer` 从 GitHub 安装最新版：
 
 ```text
 Use $skill-installer to install https://github.com/novcky/codex-goal-mode-skill/tree/main/skills/goal-mode
 ```
 
+安装当前稳定版 `v0.2.0`：
+
+```text
+Use $skill-installer to install https://github.com/novcky/codex-goal-mode-skill/tree/v0.2.0/skills/goal-mode
+```
+
 安装后重启 Codex，让新 skill 生效。
+
+稳定版本见 [Releases](https://github.com/novcky/codex-goal-mode-skill/releases)。
 
 ## 使用
 
@@ -40,7 +48,7 @@ tests/
 ## 验证
 
 ```bash
-python tests/validate_skill.py
+uv run python tests/validate_skill.py
 ```
 
 ## 许可证

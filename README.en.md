@@ -8,13 +8,21 @@ When a user explicitly starts a goal with `/goal`, `goal-mode` initializes durab
 
 ## Install
 
-In Codex, install from GitHub with `$skill-installer`:
+In Codex, install the latest version from GitHub with `$skill-installer`:
 
 ```text
 Use $skill-installer to install https://github.com/novcky/codex-goal-mode-skill/tree/main/skills/goal-mode
 ```
 
+Install the current stable release, `v0.2.0`:
+
+```text
+Use $skill-installer to install https://github.com/novcky/codex-goal-mode-skill/tree/v0.2.0/skills/goal-mode
+```
+
 Restart Codex after installation so the new skill is loaded.
+
+Stable versions are available under [Releases](https://github.com/novcky/codex-goal-mode-skill/releases).
 
 ## Use
 
@@ -40,7 +48,7 @@ tests/
 ## Validate
 
 ```bash
-python tests/validate_skill.py
+uv run python tests/validate_skill.py
 ```
 
 ## License

@@ -133,10 +133,12 @@ def main() -> None:
 
     readme_requirements = {
         "install URL": "https://github.com/novcky/codex-goal-mode-skill/tree/main/skills/goal-mode",
+        "stable install URL": "https://github.com/novcky/codex-goal-mode-skill/tree/v0.2.0/skills/goal-mode",
         "installer skill": "$skill-installer",
         "explicit trigger": "/goal",
         "explicit skill invocation": "$goal-mode",
-        "validation command": "python tests/validate_skill.py",
+        "validation command": "uv run python tests/validate_skill.py",
+        "releases link": "https://github.com/novcky/codex-goal-mode-skill/releases",
     }
     for label, phrase in readme_requirements.items():
         require(readme_zh, phrase, f"Chinese README {label}")
