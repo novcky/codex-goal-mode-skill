@@ -121,7 +121,8 @@ def main() -> None:
             fail(f"Template or shell-expansion residue found: {residue}")
 
     required_skill_phrases = {
-        "explicit /goal trigger": "Use only when the user explicitly includes `/goal`",
+        "description starts with /goal handler": "description: Handler for `/goal` mode.",
+        "explicit /goal trigger": "Use this skill only when the user explicitly includes `/goal`",
         "required load section": "## Required Load",
         "workflow reference path": "references/goal-workflow.md",
         "core contract section": "## Core Contract",
@@ -163,7 +164,7 @@ def main() -> None:
 
     readme_requirements = {
         "install URL": "https://github.com/novcky/codex-goal-mode-skill/tree/main/skills/goal-mode",
-        "pinned install URL": "https://github.com/novcky/codex-goal-mode-skill/tree/v0.3.0/skills/goal-mode",
+        "pinned install URL": "https://github.com/novcky/codex-goal-mode-skill/tree/v0.3.1/skills/goal-mode",
         "installer command": "$skill-installer install",
         "explicit trigger": "/goal",
         "explicit skill invocation": "$goal-mode",
@@ -172,7 +173,7 @@ def main() -> None:
         "issues link": "https://github.com/novcky/codex-goal-mode-skill/issues",
         "repository license link": "[LICENSE](LICENSE)",
         "skill package license link": "[LICENSE.txt](skills/goal-mode/LICENSE.txt)",
-        "pinned version wording": "v0.3.0",
+        "pinned version wording": "v0.3.1",
     }
     for label, phrase in readme_requirements.items():
         require(readme_zh, phrase, f"Chinese README {label}")

@@ -1,6 +1,6 @@
 ---
 name: goal-mode
-description: Unattended goal workflow for Codex. Use only when the user explicitly includes `/goal` or asks to enter goal mode. Initializes goal-N files and a goal-current pointer before edits, runs one task per session, stops on red flags, verifies concrete evidence, updates tasks.md, and continues until complete.
+description: Handler for `/goal` mode. Use this skill whenever the user message starts with `/goal`, contains `/goal`, or explicitly asks to enter goal mode. Initializes goal-N files and a goal-current pointer before edits, runs one task per session, stops on red flags, verifies concrete evidence, updates tasks.md, and continues until complete.
 ---
 
 # Goal Mode
