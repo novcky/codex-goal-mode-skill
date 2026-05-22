@@ -8,7 +8,7 @@
 
 ## 安装
 
-在 Codex 中使用 `$skill-installer` 从 GitHub 安装最新版：
+在 Codex 中使用 `$skill-installer` 从 GitHub 的 `main` 分支安装最新代码：
 
 ```text
 Use $skill-installer to install https://github.com/novcky/codex-goal-mode-skill/tree/main/skills/goal-mode
@@ -22,7 +22,7 @@ Use $skill-installer to install https://github.com/novcky/codex-goal-mode-skill/
 
 安装后重启 Codex，让新 skill 生效。
 
-稳定版本见 [Releases](https://github.com/novcky/codex-goal-mode-skill/releases)。
+版本记录见 [Releases](https://github.com/novcky/codex-goal-mode-skill/releases)。
 
 ## 使用
 
@@ -32,7 +32,7 @@ Use $skill-installer to install https://github.com/novcky/codex-goal-mode-skill/
 
 安装后的 skill 名称是 `goal-mode`，显式调用方式是 `$goal-mode`。
 
-## 仓库结构
+## 核心结构
 
 ```text
 skills/goal-mode/
@@ -47,7 +47,7 @@ tests/
 
 `skills/goal-mode/` 是实际可安装的 skill 包。README、测试和 CI 只放在仓库级，避免污染分发包。详细流程在 `references/goal-workflow.md`。
 
-## 仓库维护
+## 贡献与安全
 
 - [贡献指南](CONTRIBUTING.md)
 - [安全政策](SECURITY.md)

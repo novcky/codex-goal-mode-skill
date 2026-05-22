@@ -8,7 +8,7 @@ When a user explicitly starts a goal with `/goal`, `goal-mode` initializes durab
 
 ## Install
 
-In Codex, install the latest version from GitHub with `$skill-installer`:
+In Codex, install the latest code from the `main` branch with `$skill-installer`:
 
 ```text
 Use $skill-installer to install https://github.com/novcky/codex-goal-mode-skill/tree/main/skills/goal-mode
@@ -22,7 +22,7 @@ Use $skill-installer to install https://github.com/novcky/codex-goal-mode-skill/
 
 Restart Codex after installation so the new skill is loaded.
 
-Stable versions are available under [Releases](https://github.com/novcky/codex-goal-mode-skill/releases).
+Release history is available under [Releases](https://github.com/novcky/codex-goal-mode-skill/releases).
 
 ## Use
 
@@ -32,7 +32,7 @@ Stable versions are available under [Releases](https://github.com/novcky/codex-g
 
 The installed skill name is `goal-mode`, and the explicit skill invocation is `$goal-mode`.
 
-## Repository Layout
+## Core Layout
 
 ```text
 skills/goal-mode/
@@ -47,7 +47,7 @@ tests/
 
 `skills/goal-mode/` is the installable skill package. README files, tests, and CI stay at the repository level so the distributed skill package remains clean. The detailed workflow lives in `references/goal-workflow.md`.
 
-## Repository Maintenance
+## Contributing and Security
 
 - [Contributing](CONTRIBUTING.md)
 - [Security](SECURITY.md)

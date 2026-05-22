@@ -148,7 +148,7 @@ def main() -> None:
 
     readme_requirements = {
         "install URL": "https://github.com/novcky/codex-goal-mode-skill/tree/main/skills/goal-mode",
-        "stable install URL": "https://github.com/novcky/codex-goal-mode-skill/tree/v0.2.0/skills/goal-mode",
+        "pinned install URL": "https://github.com/novcky/codex-goal-mode-skill/tree/v0.2.0/skills/goal-mode",
         "installer skill": "$skill-installer",
         "explicit trigger": "/goal",
         "explicit skill invocation": "$goal-mode",
@@ -169,8 +169,17 @@ def main() -> None:
     require(readme_en, "SECURITY.md", "English README security link")
     require(readme_zh, "固定版本安装示例", "Chinese README pinned version wording")
     require(readme_en, "Install a pinned version", "English README pinned version wording")
-    if "当前稳定版" in readme_zh or "current stable release" in readme_en:
-        fail("README should avoid current-stable wording for pinned install examples")
+    require(readme_zh, "main` 分支安装最新代码", "Chinese README main branch wording")
+    require(readme_en, "latest code from the `main` branch", "English README main branch wording")
+    require(readme_zh, "版本记录见", "Chinese README release history wording")
+    require(readme_en, "Release history is available", "English README release history wording")
+    if (
+        "当前稳定版" in readme_zh
+        or "稳定版本" in readme_zh
+        or "current stable release" in readme_en
+        or "Stable versions" in readme_en
+    ):
+        fail("README should avoid stable/current-stable wording for pinned install examples")
 
     require(contributing, "## 中文", "contributing doc Chinese section")
     require(contributing, "## English", "contributing doc English section")
