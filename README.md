@@ -30,11 +30,12 @@ Use $skill-installer to install https://github.com/novcky/codex-goal-mode-skill/
 skills/goal-mode/
   SKILL.md
   agents/openai.yaml
+  references/goal-workflow.md
 tests/
   validate_skill.py
 ```
 
-`skills/goal-mode/` 是实际可安装的 skill 包。README、测试和 CI 只放在仓库级，避免污染分发包。
+`skills/goal-mode/` 是实际可安装的 skill 包。README、测试和 CI 只放在仓库级，避免污染分发包。详细流程在 `references/goal-workflow.md`。
 
 ## 验证
 

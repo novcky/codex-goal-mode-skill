@@ -30,11 +30,12 @@ The installed skill name is `goal-mode`, and the explicit skill invocation is `$
 skills/goal-mode/
   SKILL.md
   agents/openai.yaml
+  references/goal-workflow.md
 tests/
   validate_skill.py
 ```
 
-`skills/goal-mode/` is the installable skill package. README files, tests, and CI stay at the repository level so the distributed skill package remains clean.
+`skills/goal-mode/` is the installable skill package. README files, tests, and CI stay at the repository level so the distributed skill package remains clean. The detailed workflow lives in `references/goal-workflow.md`.
 
 ## Validate
 

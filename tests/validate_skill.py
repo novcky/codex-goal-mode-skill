@@ -12,6 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SKILL_DIR = ROOT / "skills" / "goal-mode"
 SKILL_MD = SKILL_DIR / "SKILL.md"
 OPENAI_YAML = SKILL_DIR / "agents" / "openai.yaml"
+WORKFLOW_REF = SKILL_DIR / "references" / "goal-workflow.md"
 README_ZH = ROOT / "README.md"
 README_EN = ROOT / "README.en.md"
 
@@ -51,11 +52,17 @@ def main() -> None:
         fail("skills/goal-mode/SKILL.md is missing")
     if not OPENAI_YAML.exists():
         fail("skills/goal-mode/agents/openai.yaml is missing")
+    if not WORKFLOW_REF.exists():
+        fail("skills/goal-mode/references/goal-workflow.md is missing")
     if not README_ZH.exists():
         fail("README.md is missing")
     if not README_EN.exists():
         fail("README.en.md is missing")
-    expected_files = {Path("SKILL.md"), Path("agents/openai.yaml")}
+    expected_files = {
+        Path("SKILL.md"),
+        Path("agents/openai.yaml"),
+        Path("references/goal-workflow.md"),
+    }
     actual_files = {path.relative_to(SKILL_DIR) for path in SKILL_DIR.rglob("*") if path.is_file()}
     if actual_files != expected_files:
         unexpected = ", ".join(str(path) for path in sorted(actual_files - expected_files))
@@ -64,6 +71,7 @@ def main() -> None:
 
     skill = SKILL_MD.read_text(encoding="utf-8")
     openai_yaml = OPENAI_YAML.read_text(encoding="utf-8")
+    workflow_ref = WORKFLOW_REF.read_text(encoding="utf-8")
     readme_zh = README_ZH.read_text(encoding="utf-8")
     readme_en = README_EN.read_text(encoding="utf-8")
     frontmatter = parse_frontmatter(skill)
@@ -80,6 +88,10 @@ def main() -> None:
         fail("description must be 1024 characters or fewer")
     if "<" in description or ">" in description:
         fail("description must not contain angle brackets")
+    if len(skill.splitlines()) > 120:
+        fail("SKILL.md must stay thin and be at most 120 lines")
+    if len(workflow_ref.splitlines()) > 240:
+        fail("references/goal-workflow.md must stay under 240 lines")
 
     for residue in ("TODO", "[TODO", "Resources (optional)", "Use -mode"):
         if residue in skill or residue in openai_yaml:
@@ -87,17 +99,33 @@ def main() -> None:
 
     required_skill_phrases = {
         "explicit /goal trigger": "Use only when the user explicitly includes `/goal`",
-        "runtime contract section": "## Runtime Contract",
-        "runtime contract task instruction": "Start `tasks.md` with the Runtime Contract block above.",
-        "task closure section": "## Task Closure Protocol",
+        "required load section": "## Required Load",
+        "workflow reference path": "references/goal-workflow.md",
+        "core contract section": "## Core Contract",
         "red flags section": "## Red Flags - STOP",
         "init sentinel": "GOAL_INIT_DONE",
-        "one task rule": "Execute only the first incomplete",
-        "evidence rule": "Do not claim confidence without evidence.",
-        "final review section": "## Final Review",
+        "safety section": "## Safety Rules",
     }
     for label, phrase in required_skill_phrases.items():
         require(skill, phrase, label)
+
+    required_reference_phrases = {
+        "runtime contract": "## Runtime Contract",
+        "initialization turn": "## Initialization Turn",
+        "session loop": "## Session Loop",
+        "principles and checks": "## Principles and Checks",
+        "check sentence": "Check:",
+        "task closure protocol": "## Task Closure Protocol",
+        "checkpoints": "## Checkpoints",
+        "final review": "## Final Review",
+        "rationalizations": "## Rationalizations to Reject",
+        "aar questions": "## AAR Questions",
+        "goal init sentinel": "GOAL_INIT_DONE",
+        "one task rule": "Execute only one task per session.",
+        "evidence rule": "Do not claim confidence without evidence.",
+    }
+    for label, phrase in required_reference_phrases.items():
+        require(workflow_ref, phrase, label)
 
     require(openai_yaml, 'display_name: "Goal Mode"', "display name")
     require(openai_yaml, 'short_description: "Plan and run unattended goal tasks"', "short description")
@@ -115,6 +143,8 @@ def main() -> None:
         require(readme_en, phrase, f"English README {label}")
     require(readme_zh, "[English](README.en.md)", "Chinese README language link")
     require(readme_en, "[中文](README.md)", "English README language link")
+    require(readme_zh, "references/goal-workflow.md", "Chinese README repository structure")
+    require(readme_en, "references/goal-workflow.md", "English README repository structure")
 
     disallowed_skill_files = {"README.md", "INSTALLATION_GUIDE.md", "QUICK_REFERENCE.md", "CHANGELOG.md"}
     for path in SKILL_DIR.rglob("*"):
