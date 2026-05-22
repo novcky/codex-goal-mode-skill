@@ -134,8 +134,9 @@ def main() -> None:
         "same-session task red flag": "you are about to execute Task 1 in the same session that created `goal-current` or `goal-N/`",
         "goal pointer": "goal-current",
         "automatic task-boundary commit": "Commit code changes at the task boundary when working inside a git repository",
-        "final review tracking commit": "final-review tracking commit only for final-review-only `tasks.md` updates",
+        "tracking commit policy": "use checkpoint/final-review tracking commits for tracking-only `tasks.md` updates",
         "task final red flag": "you are about to use `goal-N task final: Final Review`",
+        "checkpoint tracking red flag": "checkpoint tracking commit or recorded commit failure",
         "durable commit status": "make its commit-status wording durable so it remains true after the commit",
         "pending commit status red flag": "commit status still saying pending, ready to commit, or to be created",
         "commit failure red flag": "task-boundary commit or a recorded commit failure",
@@ -165,9 +166,13 @@ def main() -> None:
         "goal_context objective extraction": "write the `objective` text as the goal prompt",
         "goal_context source note": "Source: Codex goal_context",
         "commit policy": "commit code changes at the task boundary when the project is a git repository",
+        "checkpoint commit policy": "Commit checkpoint-only tracking updates as `goal-N checkpoint after task M: complete` when the project is a git repository.",
         "final review commit policy": "Commit final-review-only tracking updates as `goal-N final review: complete` when the project is a git repository.",
         "task-boundary commit format": "goal-N task M: <task title>",
         "first task includes init files": "include the untracked initialization files from the initialization turn",
+        "checkpoint commit format": "goal-N checkpoint after task M: complete",
+        "durable checkpoint commit status": 'Commit status: included in checkpoint tracking commit message "goal-N checkpoint after task M: complete"',
+        "checkpoint repair rule": "If a previous checkpoint is already marked complete in `tasks.md` but its tracking update is uncommitted",
         "final review commit format": "goal-N final review: complete",
         "task final banned": "do not use `goal-N task final: Final Review`",
         "durable commit status runtime": "Commit-status text in tasks.md must remain true after the commit",
@@ -246,6 +251,8 @@ def main() -> None:
     require(readme_en, "Initialization files are not committed on the first turn", "English README initialization commit policy")
     require(readme_zh, "goal-N final review: complete", "Chinese README final-review commit message")
     require(readme_en, "goal-N final review: complete", "English README final-review commit message")
+    require(readme_zh, "goal-N checkpoint after task M: complete", "Chinese README checkpoint commit message")
+    require(readme_en, "goal-N checkpoint after task M: complete", "English README checkpoint commit message")
     if "goal-N task final: Final Review" in readme_zh + readme_en:
         fail("README must not document the old task-final commit format")
     if "v0.2.0/skills/goal-mode" in readme_zh or "v0.2.0/skills/goal-mode" in readme_en:

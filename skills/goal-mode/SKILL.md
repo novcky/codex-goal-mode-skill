@@ -28,7 +28,7 @@ The detailed session loop, task closure protocol, checkpoints, final review, rej
 - Execute only one task per session.
 - Verify with concrete evidence before closing a task.
 - Update `tasks.md` with work, evidence, risk, and next step.
-- Commit code changes at the task boundary when working inside a git repository, and use the final-review tracking commit only for final-review-only `tasks.md` updates.
+- Commit code changes at the task boundary when working inside a git repository, and use checkpoint/final-review tracking commits for tracking-only `tasks.md` updates.
 - Before committing `tasks.md`, make its commit-status wording durable so it remains true after the commit.
 - Stop on red flags instead of pushing ahead.
 
@@ -43,6 +43,7 @@ Stop task execution and repair the workflow state first if you notice:
 - you started a new session or resumed after compaction without rereading all three goal files
 - `goal-current` is missing, invalid, or points to a completed goal while incomplete goals exist
 - you changed code in a git repo and are about to finish the task without a task-boundary commit or a recorded commit failure
+- you completed a checkpoint in a git repo and are about to continue without a checkpoint tracking commit or recorded commit failure
 - you are about to use `goal-N task final: Final Review` instead of the final-review tracking commit message from the reference file
 - you are about to commit `tasks.md` with commit status still saying pending, ready to commit, or to be created
 - you changed code but did not update `tasks.md`
@@ -61,7 +62,7 @@ In goal mode, do not:
 - ask the user questions
 - break network connectivity
 - edit code before initialization files exist
-- create git commits before validation, before updating `tasks.md`, or outside a task boundary or final-review tracking boundary
+- create git commits before validation, before updating `tasks.md`, or outside a task boundary, checkpoint tracking boundary, or final-review tracking boundary
 - execute more than one task per session
 - expand scope without recording a default assumption and rationale
 - delete important data without an explicit requirement and safe rollback plan
