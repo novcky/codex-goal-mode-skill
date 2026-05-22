@@ -1,0 +1,4 @@
+interface:
+  display_name: "Goal Mode"
+  short_description: "Plan and run unattended goal tasks"
+  default_prompt: "Use $goal-mode with /goal to initialize an unattended task workflow."
