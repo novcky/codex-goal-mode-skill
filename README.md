@@ -39,11 +39,18 @@ skills/goal-mode/
   SKILL.md
   agents/openai.yaml
   references/goal-workflow.md
+  LICENSE.txt
 tests/
   validate_skill.py
+  install_smoke.py
 ```
 
 `skills/goal-mode/` 是实际可安装的 skill 包。README、测试和 CI 只放在仓库级，避免污染分发包。详细流程在 `references/goal-workflow.md`。
+
+## 仓库维护
+
+- [贡献指南](CONTRIBUTING.md)
+- [安全政策](SECURITY.md)
 
 ## 验证
 

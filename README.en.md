@@ -39,11 +39,18 @@ skills/goal-mode/
   SKILL.md
   agents/openai.yaml
   references/goal-workflow.md
+  LICENSE.txt
 tests/
   validate_skill.py
+  install_smoke.py
 ```
 
 `skills/goal-mode/` is the installable skill package. README files, tests, and CI stay at the repository level so the distributed skill package remains clean. The detailed workflow lives in `references/goal-workflow.md`.
+
+## Repository Maintenance
+
+- [Contributing](CONTRIBUTING.md)
+- [Security](SECURITY.md)
 
 ## Validate
 

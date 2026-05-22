@@ -13,8 +13,11 @@ SKILL_DIR = ROOT / "skills" / "goal-mode"
 SKILL_MD = SKILL_DIR / "SKILL.md"
 OPENAI_YAML = SKILL_DIR / "agents" / "openai.yaml"
 WORKFLOW_REF = SKILL_DIR / "references" / "goal-workflow.md"
+SKILL_LICENSE = SKILL_DIR / "LICENSE.txt"
 README_ZH = ROOT / "README.md"
 README_EN = ROOT / "README.en.md"
+CONTRIBUTING = ROOT / "CONTRIBUTING.md"
+SECURITY = ROOT / "SECURITY.md"
 
 
 def fail(message: str) -> None:
@@ -54,14 +57,21 @@ def main() -> None:
         fail("skills/goal-mode/agents/openai.yaml is missing")
     if not WORKFLOW_REF.exists():
         fail("skills/goal-mode/references/goal-workflow.md is missing")
+    if not SKILL_LICENSE.exists():
+        fail("skills/goal-mode/LICENSE.txt is missing")
     if not README_ZH.exists():
         fail("README.md is missing")
     if not README_EN.exists():
         fail("README.en.md is missing")
+    if not CONTRIBUTING.exists():
+        fail("CONTRIBUTING.md is missing")
+    if not SECURITY.exists():
+        fail("SECURITY.md is missing")
     expected_files = {
         Path("SKILL.md"),
         Path("agents/openai.yaml"),
         Path("references/goal-workflow.md"),
+        Path("LICENSE.txt"),
     }
     actual_files = {path.relative_to(SKILL_DIR) for path in SKILL_DIR.rglob("*") if path.is_file()}
     if actual_files != expected_files:
@@ -72,8 +82,11 @@ def main() -> None:
     skill = SKILL_MD.read_text(encoding="utf-8")
     openai_yaml = OPENAI_YAML.read_text(encoding="utf-8")
     workflow_ref = WORKFLOW_REF.read_text(encoding="utf-8")
+    skill_license = SKILL_LICENSE.read_text(encoding="utf-8")
     readme_zh = README_ZH.read_text(encoding="utf-8")
     readme_en = README_EN.read_text(encoding="utf-8")
+    contributing = CONTRIBUTING.read_text(encoding="utf-8")
+    security = SECURITY.read_text(encoding="utf-8")
     frontmatter = parse_frontmatter(skill)
 
     name = frontmatter.get("name")
@@ -92,6 +105,8 @@ def main() -> None:
         fail("SKILL.md must stay thin and be at most 120 lines")
     if len(workflow_ref.splitlines()) > 240:
         fail("references/goal-workflow.md must stay under 240 lines")
+    if "MIT License" not in skill_license:
+        fail("skills/goal-mode/LICENSE.txt must contain the MIT License text")
 
     for residue in ("TODO", "[TODO", "Resources (optional)", "Use -mode"):
         if residue in skill or residue in openai_yaml:
@@ -147,6 +162,15 @@ def main() -> None:
     require(readme_en, "[中文](README.md)", "English README language link")
     require(readme_zh, "references/goal-workflow.md", "Chinese README repository structure")
     require(readme_en, "references/goal-workflow.md", "English README repository structure")
+    require(readme_zh, "CONTRIBUTING.md", "Chinese README contributing link")
+    require(readme_en, "CONTRIBUTING.md", "English README contributing link")
+    require(readme_zh, "SECURITY.md", "Chinese README security link")
+    require(readme_en, "SECURITY.md", "English README security link")
+
+    require(contributing, "## 中文", "contributing doc Chinese section")
+    require(contributing, "## English", "contributing doc English section")
+    require(security, "## 中文", "security doc Chinese section")
+    require(security, "## English", "security doc English section")
 
     disallowed_skill_files = {"README.md", "INSTALLATION_GUIDE.md", "QUICK_REFERENCE.md", "CHANGELOG.md"}
     for path in SKILL_DIR.rglob("*"):

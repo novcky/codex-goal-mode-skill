@@ -15,6 +15,7 @@ EXPECTED_FILES = {
     Path("SKILL.md"),
     Path("agents/openai.yaml"),
     Path("references/goal-workflow.md"),
+    Path("LICENSE.txt"),
 }
 
 
@@ -43,6 +44,8 @@ def main() -> None:
             fail("installed SKILL.md does not declare name: goal-mode")
         if "references/goal-workflow.md" not in skill_md:
             fail("installed SKILL.md does not reference the workflow file")
+        if not (installed / "LICENSE.txt").exists():
+            fail("installed skill package is missing LICENSE.txt")
 
     print("goal-mode install smoke test passed")
 
