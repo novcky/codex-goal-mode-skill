@@ -14,7 +14,7 @@ In Codex, install the latest version from GitHub with `$skill-installer`:
 Use $skill-installer to install https://github.com/novcky/codex-goal-mode-skill/tree/main/skills/goal-mode
 ```
 
-Install the current stable release, `v0.2.0`:
+Install a pinned version:
 
 ```text
 Use $skill-installer to install https://github.com/novcky/codex-goal-mode-skill/tree/v0.2.0/skills/goal-mode

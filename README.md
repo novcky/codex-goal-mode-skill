@@ -14,7 +14,7 @@
 Use $skill-installer to install https://github.com/novcky/codex-goal-mode-skill/tree/main/skills/goal-mode
 ```
 
-安装当前稳定版 `v0.2.0`：
+固定版本安装示例：
 
 ```text
 Use $skill-installer to install https://github.com/novcky/codex-goal-mode-skill/tree/v0.2.0/skills/goal-mode

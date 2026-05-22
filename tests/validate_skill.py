@@ -154,6 +154,7 @@ def main() -> None:
         "explicit skill invocation": "$goal-mode",
         "validation command": "python tests/validate_skill.py",
         "releases link": "https://github.com/novcky/codex-goal-mode-skill/releases",
+        "pinned version wording": "v0.2.0",
     }
     for label, phrase in readme_requirements.items():
         require(readme_zh, phrase, f"Chinese README {label}")
@@ -166,6 +167,10 @@ def main() -> None:
     require(readme_en, "CONTRIBUTING.md", "English README contributing link")
     require(readme_zh, "SECURITY.md", "Chinese README security link")
     require(readme_en, "SECURITY.md", "English README security link")
+    require(readme_zh, "固定版本安装示例", "Chinese README pinned version wording")
+    require(readme_en, "Install a pinned version", "English README pinned version wording")
+    if "当前稳定版" in readme_zh or "current stable release" in readme_en:
+        fail("README should avoid current-stable wording for pinned install examples")
 
     require(contributing, "## 中文", "contributing doc Chinese section")
     require(contributing, "## English", "contributing doc English section")
