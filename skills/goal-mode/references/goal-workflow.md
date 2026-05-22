@@ -35,7 +35,7 @@ goal-N/
   tasks.md
 ```
 
-4. Write `input.md` with the user's original prompt verbatim.
+4. Write `input.md` with the user's original prompt verbatim. If Codex transformed the original `/goal` command into a `goal_context` message, write the `objective` text as the goal prompt and note `Source: Codex goal_context`.
 5. Write `plan.md` with the goal analysis, relevant context, risks, implementation approach, validation approach, rollback approach, necessary default assumptions, and `Commit policy`.
 6. Start `tasks.md` with the Runtime Contract block above.
 7. Add `Goal status: active` and `Commit policy: no commits unless the original /goal request explicitly asks for commits` to `tasks.md`. If commits were explicitly requested, record that policy instead.
