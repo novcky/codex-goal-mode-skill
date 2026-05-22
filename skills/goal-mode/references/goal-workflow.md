@@ -7,9 +7,10 @@ Read this file after `SKILL.md` and before any goal-mode initialization or task 
 ```text
 Runtime Contract:
 - Resolve the active goal through goal-current before choosing work.
+- If this session created goal-current or goal-N files, stop with exactly GOAL_INIT_DONE.
 - At the start of every session, read input.md, plan.md, and tasks.md in full.
 - Execute only the first incomplete task or required checkpoint.
-- Do not create git commits unless the original goal explicitly requested commits.
+- Commit code changes at the task boundary when the project is a git repository.
 - Do not ask the user questions; record assumptions and continue safely.
 - Before closing a task, verify with concrete evidence.
 - Update this tasks.md with work, evidence, risk, and next step.
@@ -36,9 +37,9 @@ goal-N/
 ```
 
 4. Write `input.md` with the user's original prompt verbatim. If Codex transformed the original `/goal` command into a `goal_context` message, write the `objective` text as the goal prompt and note `Source: Codex goal_context`.
-5. Write `plan.md` with the goal analysis, relevant context, risks, implementation approach, validation approach, rollback approach, necessary default assumptions, and `Commit policy`.
+5. Write `plan.md` with the goal analysis, relevant context, risks, implementation approach, validation approach, rollback approach, necessary default assumptions, and commit approach.
 6. Start `tasks.md` with the Runtime Contract block above.
-7. Add `Goal status: active` and `Commit policy: no commits unless the original /goal request explicitly asks for commits` to `tasks.md`. If commits were explicitly requested, record that policy instead.
+7. Add `Goal status: active` and `Commit policy: commit code changes at the task boundary when the project is a git repository` to `tasks.md`.
 8. Continue `tasks.md` with small independently verifiable tasks. Prefer about 10 tasks for medium-sized work, fewer for very small work, and more for large work. Each task must reserve space for:
    - completion status
    - work performed
@@ -46,7 +47,7 @@ goal-N/
    - remaining risk
    - next step
 9. Mark a major check/debug checkpoint after every third task in `tasks.md`.
-10. Register the goal with built-in goal tooling when available, such as `create_goal`. Register the current todo/checklist with available task tooling when appropriate.
+10. Register the goal with built-in goal tooling when available, such as `create_goal`, unless Codex `goal_context` already created an active goal. Register the current todo/checklist with available task tooling when appropriate. If the tooling is unavailable, continue the file workflow and record the limitation.
 11. End the first turn with exactly:
 
 ```text
@@ -54,6 +55,8 @@ GOAL_INIT_DONE
 ```
 
 Do not output anything else on the initialization turn.
+
+Do not combine initialization with task execution, even for tiny goals. During the initialization turn, do not edit target project files, run task validation, close tasks, perform final review, create commits, or mark the goal complete.
 
 ## Session Loop
 
@@ -79,8 +82,8 @@ Then:
 4. Before ending the task, ask internally: "Am I factually confident in the current implementation?"
 5. If confidence is not backed by evidence, inspect, test, review diffs/logs/types/build output, and fix issues until confidence is supported by concrete evidence.
 6. Run the Task Closure Protocol before reporting.
-7. Create a git commit only when the original `/goal` request explicitly asked for commits; otherwise leave changes uncommitted and record the commit policy in `tasks.md`.
-8. Update `tasks.md` for the completed task with work performed, verification evidence, remaining risk, and next step.
+7. Update `tasks.md` for the completed task with work performed, verification evidence, remaining risk, next step, and commit status.
+8. If task execution changed code inside a git repository, create one task-boundary commit after validation and the `tasks.md` update. Use commit message `goal-N task M: <task title>` and include only task-related implementation files plus the relevant goal tracking update. If there is no git repository, record `Commit skipped: not a git repository` in `tasks.md`. If the commit fails, record the failure in `tasks.md` and stop instead of asking the user.
 9. Briefly report progress to the user, then stop output so the client can auto-advance.
 
 Do not claim confidence without evidence. Evidence can include tests, builds, type checks, diffs, logs, manual UI checks, static analysis, or other concrete verification artifacts.
@@ -92,7 +95,8 @@ Do not claim confidence without evidence. Evidence can include tests, builds, ty
 - Principle: State synchronization. Check: Do code changes, commits, and `tasks.md` describe the same work? If no, fix the mismatch.
 - Principle: Scope control. Check: Did new scope appear that was not in `input.md` or `plan.md`? If yes, record an assumption before continuing.
 - Principle: Goal resolution. Check: Did this session resolve the active goal from `goal-current`, or repair it by selecting the highest-numbered incomplete goal? If no, stop before touching implementation.
-- Principle: Commit control. Check: Did this session create or prepare a git commit without an explicit user request? If yes, stop and repair the workflow state.
+- Principle: Initialization boundary. Check: Did this session create goal files and also execute Task 1? If yes, stop and repair the workflow state.
+- Principle: Commit control. Check: Did this session change code in a git repo without a task-boundary commit or recorded commit failure? If yes, stop and repair the workflow state.
 - Principle: Compaction resilience. Check: Did this session read `input.md`, `plan.md`, and `tasks.md` in full? If no, read them before touching implementation.
 
 ## Task Closure Protocol
@@ -141,7 +145,8 @@ Reject these before they turn into drift:
 - "Let's just do the next task too."
 - "The user wants speed, so evidence can be light."
 - "This time the red flag does not really count."
-- "I should commit because code changed, even though the user did not ask for commits."
+- "This is a tiny goal, so I can initialize and execute Task 1 in one session."
+- "I can skip the task-boundary commit because the change is small."
 
 ## AAR Questions
 

@@ -46,9 +46,10 @@ The installed skill name is `goal-mode`, and the explicit skill invocation is `$
 
 - The first `/goal` turn creates `goal-N/input.md`, `goal-N/plan.md`, and `goal-N/tasks.md` under the current project root.
 - It handles Codex sessions where `/goal` is transformed into an internal `goal_context` message.
+- The first turn only initializes goal files and outputs exactly `GOAL_INIT_DONE`; later sessions start Task 1.
 - It also maintains a project-root `goal-current` pointer so later sessions can resume the active goal.
 - Later turns read those three files, advance only one incomplete task from `tasks.md`, and record validation evidence, remaining risk, and the next step.
-- It does not create git commits by default; commits happen only when the `/goal` request explicitly asks for them.
+- If the current project is a git repository and a task changes code, it creates one task-boundary commit after validation and the `tasks.md` update.
 - When a stop condition appears, task execution pauses until the workflow state is repaired or the blocker is recorded.
 
 ## Core Layout

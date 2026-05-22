@@ -46,9 +46,10 @@ rm -rf ~/.codex/skills/goal-mode
 
 - 首次 `/goal` 会在当前项目根目录创建 `goal-N/input.md`、`goal-N/plan.md` 和 `goal-N/tasks.md`。
 - 兼容 Codex 将 `/goal` 转换成内部 `goal_context` 的会话形态。
+- 首轮只初始化 goal 文件，最后只输出 `GOAL_INIT_DONE`；后续会话才开始执行 Task 1。
 - 同时会维护项目根目录的 `goal-current`，用于后续会话恢复当前活动目标。
 - 后续每轮会读取这三份文件，只推进 `tasks.md` 中的一个未完成任务，并记录验证证据、剩余风险和下一步。
-- 默认不会创建 git commit；只有 `/goal` 请求明确要求提交时才会提交。
+- 如果当前项目是 git 仓库且某个 task 修改了代码，验证通过并更新 `tasks.md` 后会创建一次 task 边界提交。
 - 触发停止条件时会暂停任务执行，先修复工作流状态或记录阻塞原因。
 
 ## 核心结构

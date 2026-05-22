@@ -130,8 +130,11 @@ def main() -> None:
         "core contract section": "## Core Contract",
         "red flags section": "## Red Flags - STOP",
         "init sentinel": "GOAL_INIT_DONE",
+        "strict initialization boundary": "The initialization turn must not edit target project files, validate task work, execute Task 1, close tasks, or run final review.",
+        "same-session task red flag": "you are about to execute Task 1 in the same session that created `goal-current` or `goal-N/`",
         "goal pointer": "goal-current",
-        "commit control": "Do not create git commits unless the user's goal explicitly asks for commits.",
+        "automatic task-boundary commit": "Commit code changes at the task boundary when working inside a git repository.",
+        "commit failure red flag": "task-boundary commit or a recorded commit failure",
         "safety section": "## Safety Rules",
     }
     for label, phrase in required_skill_phrases.items():
@@ -152,10 +155,15 @@ def main() -> None:
         "goal pointer": "goal-current",
         "goal active status": "Goal status: active",
         "goal complete status": "Goal status: complete",
+        "strict init runtime contract": "If this session created goal-current or goal-N files, stop with exactly GOAL_INIT_DONE.",
+        "strict init no combining": "Do not combine initialization with task execution, even for tiny goals.",
+        "strict init task ban": "do not edit target project files, run task validation, close tasks, perform final review, create commits, or mark the goal complete",
         "goal_context objective extraction": "write the `objective` text as the goal prompt",
         "goal_context source note": "Source: Codex goal_context",
-        "commit policy": "Commit policy",
-        "commit control": "Do not create git commits unless the original goal explicitly requested commits.",
+        "commit policy": "commit code changes at the task boundary when the project is a git repository",
+        "task-boundary commit format": "goal-N task M: <task title>",
+        "commit skipped non-git": "Commit skipped: not a git repository",
+        "commit failure handling": "If the commit fails, record the failure in `tasks.md` and stop instead of asking the user.",
         "one task rule": "Execute only one task per session.",
         "evidence rule": "Do not claim confidence without evidence.",
     }
@@ -216,8 +224,12 @@ def main() -> None:
     require(readme_en, "goal-current", "English README active goal pointer")
     require(readme_zh, "goal_context", "Chinese README internal goal context note")
     require(readme_en, "goal_context", "English README internal goal context note")
-    require(readme_zh, "git commit", "Chinese README commit policy")
-    require(readme_en, "git commits", "English README commit policy")
+    require(readme_zh, "GOAL_INIT_DONE", "Chinese README strict init output")
+    require(readme_en, "GOAL_INIT_DONE", "English README strict init output")
+    require(readme_zh, "后续会话才开始执行 Task 1", "Chinese README delayed task execution")
+    require(readme_en, "later sessions start Task 1", "English README delayed task execution")
+    require(readme_zh, "task 边界提交", "Chinese README task-boundary commit policy")
+    require(readme_en, "task-boundary commit", "English README task-boundary commit policy")
     if "v0.2.0/skills/goal-mode" in readme_zh or "v0.2.0/skills/goal-mode" in readme_en:
         fail("README pinned install example must not point at v0.2.0")
     if re.search(r"tree/v[0-9]+\.[0-9]+\.[0-9]+/skills/goal-mode", readme_zh + readme_en):
