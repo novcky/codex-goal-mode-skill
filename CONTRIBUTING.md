@@ -5,7 +5,7 @@
 - `skills/goal-mode/` 只能保留 `SKILL.md`、`agents/openai.yaml`、`references/goal-workflow.md`、`LICENSE.txt`。
 - 不要把 README、CHANGELOG、安装指南放进 skill 包。
 - 改动 README、CI 或 release notes 时，保持中英双语。
-- 复杂行为变更先发布为 GitHub pre-release；完整实机验证通过后，再将同一个 release 提升为正式 Latest。
+- 复杂行为变更先发布为带后缀的 GitHub pre-release，例如 `v0.4.9-rc.1` 或 `v0.4.9-beta.1`；完整实机验证通过后，再创建无后缀正式版本，例如 `v0.4.9`，并标记为 Latest。
 
 提交前运行完整校验：
 
@@ -22,7 +22,7 @@ python tests/official_validate.py
 - Keep `skills/goal-mode/` limited to `SKILL.md`, `agents/openai.yaml`, `references/goal-workflow.md`, and `LICENSE.txt`.
 - Do not add README, CHANGELOG, or installation guides to the installable skill package.
 - Keep README, CI, and release notes bilingual.
-- Publish complex behavior changes as GitHub pre-releases first; after full real-machine validation passes, promote the same release to the stable Latest release.
+- Publish complex behavior changes as suffixed GitHub pre-releases first, such as `v0.4.9-rc.1` or `v0.4.9-beta.1`; after full real-machine validation passes, create the unsuffixed stable version, such as `v0.4.9`, and mark it as Latest.
 
 Run the full validation flow before submitting:
 

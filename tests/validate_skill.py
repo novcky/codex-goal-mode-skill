@@ -343,8 +343,10 @@ def main() -> None:
     require(contributing, "python tests/goal_mode_scenarios.py", "contributing scenario validator command")
     require(contributing, "python -m pip install pyyaml", "contributing pyyaml command")
     require(contributing, "python tests/official_validate.py", "contributing official validator command")
-    require(contributing, "pre-release", "contributing prerelease policy")
-    require(contributing, "正式 Latest", "contributing stable promotion policy")
+    require(contributing, "v0.4.9-rc.1", "contributing prerelease suffix example")
+    require(contributing, "v0.4.9-beta.1", "contributing beta suffix example")
+    require(contributing, "无后缀正式版本", "contributing stable version policy")
+    require(contributing, "unsuffixed stable version", "contributing English stable version policy")
     require(official_validate, "e8acbcb5f86cef1e04b96eed7557148b719c5f6b", "official validator pinned commit")
     require(
         official_validate,
