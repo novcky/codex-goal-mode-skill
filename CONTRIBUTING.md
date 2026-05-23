@@ -12,6 +12,7 @@
 ```bash
 python tests/validate_skill.py
 python tests/install_smoke.py
+python tests/goal_mode_scenarios.py
 python -m pip install pyyaml
 python tests/official_validate.py
 ```
@@ -28,6 +29,7 @@ Run the full validation flow before submitting:
 ```bash
 python tests/validate_skill.py
 python tests/install_smoke.py
+python tests/goal_mode_scenarios.py
 python -m pip install pyyaml
 python tests/official_validate.py
 ```

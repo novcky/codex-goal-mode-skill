@@ -51,6 +51,8 @@ The installed skill name is `goal-mode`, and the explicit skill invocation is `$
 - Later progress updates, task records, and final reports keep that language; machine text such as `GOAL_INIT_DONE`, paths, commands, error output, and commit markers stays unchanged.
 - It also maintains a project-root `goal-current` pointer so later sessions can resume the active goal.
 - Later turns read those three files, advance only one incomplete task from `tasks.md`, and record validation evidence, remaining risk, and the next step.
+- Task, checkpoint, and final-review records keep a short evidence digest that references commands, commits, files, and risks instead of copying long output into long-running goal files.
+- On Windows/WSL evidence checks, prefer `pwsh -NoProfile` or `powershell -NoProfile`; when shell profile noise appears, re-check with a no-profile or non-login shell.
 - If the current project is a git repository and a task changes code, it creates one task-boundary commit after validation and the `tasks.md` update.
 - If a repository hook rejects the default goal-mode commit subject, it uses a repository-accepted subject and preserves the `Goal-mode boundary:` marker in the commit body and `tasks.md`.
 - After each task-boundary commit, commit skip, or commit failure record, it stops; checkpoints and final review run in later sessions.
@@ -70,6 +72,7 @@ skills/goal-mode/
 tests/
   validate_skill.py
   install_smoke.py
+  goal_mode_scenarios.py
   official_validate.py
 ```
 
@@ -85,9 +88,10 @@ tests/
 
 ```bash
 python tests/validate_skill.py
+python tests/goal_mode_scenarios.py
 ```
 
-If you prefer `uv`, you can also run `uv run python tests/validate_skill.py`.
+If you prefer `uv`, you can also run `uv run python tests/validate_skill.py` and `uv run python tests/goal_mode_scenarios.py`.
 
 For the full pre-contribution validation flow, see [Contributing](CONTRIBUTING.md).
 

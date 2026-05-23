@@ -18,6 +18,7 @@ README_ZH = ROOT / "README.md"
 README_EN = ROOT / "README.en.md"
 CONTRIBUTING = ROOT / "CONTRIBUTING.md"
 SECURITY = ROOT / "SECURITY.md"
+SCENARIO_VALIDATE = ROOT / "tests" / "goal_mode_scenarios.py"
 OFFICIAL_VALIDATE = ROOT / "tests" / "official_validate.py"
 WORKFLOW = ROOT / ".github" / "workflows" / "validate.yml"
 
@@ -69,6 +70,8 @@ def main() -> None:
         fail("CONTRIBUTING.md is missing")
     if not SECURITY.exists():
         fail("SECURITY.md is missing")
+    if not SCENARIO_VALIDATE.exists():
+        fail("tests/goal_mode_scenarios.py is missing")
     if not OFFICIAL_VALIDATE.exists():
         fail("tests/official_validate.py is missing")
     if not WORKFLOW.exists():
@@ -93,6 +96,7 @@ def main() -> None:
     readme_en = README_EN.read_text(encoding="utf-8")
     contributing = CONTRIBUTING.read_text(encoding="utf-8")
     security = SECURITY.read_text(encoding="utf-8")
+    scenario_validate = SCENARIO_VALIDATE.read_text(encoding="utf-8")
     official_validate = OFFICIAL_VALIDATE.read_text(encoding="utf-8")
     workflow = WORKFLOW.read_text(encoding="utf-8")
     frontmatter = parse_frontmatter(skill)
@@ -111,8 +115,8 @@ def main() -> None:
         fail("description must not contain angle brackets")
     if len(skill.splitlines()) > 120:
         fail("SKILL.md must stay thin and be at most 120 lines")
-    if len(workflow_ref.splitlines()) > 260:
-        fail("references/goal-workflow.md must stay under 260 lines")
+    if len(workflow_ref.splitlines()) > 280:
+        fail("references/goal-workflow.md must stay under 280 lines")
     if "MIT License" not in skill_license:
         fail("skills/goal-mode/LICENSE.txt must contain the MIT License text")
 
@@ -226,8 +230,14 @@ def main() -> None:
         "dirty worktree allowed leftovers": "Allowed dirty state is limited to active goal-mode tracking leftovers",
         "dirty worktree blocker": "Record a blocker in `tasks.md`, do not edit implementation files, do not stage or commit the unrelated files, and stop.",
         "powershell no profile": "Use `pwsh -NoProfile` or `powershell -NoProfile`",
+        "profile startup noise": "shell profile startup noise",
+        "no-profile non-login retry": "retry with a no-profile or non-login shell",
         "checkpoint repair task": "Insert the next repair task in `tasks.md`",
         "checkpoint no implementation fix": "do not fix implementation files in the checkpoint session",
+        "compaction evidence digest": "Compaction evidence digest",
+        "short evidence digest": "short evidence digest",
+        "avoid long command output": "avoid pasting long command output",
+        "compact audit digest": "compact audit digest",
         "final review post commit": "verify `git log -1 --format=%s%n%b` shows `goal-N final review: complete` or the matching `Goal-mode boundary:` marker",
         "future layout migration note": "Future directory-layout migration note",
     }
@@ -244,6 +254,7 @@ def main() -> None:
         "explicit trigger": "/goal",
         "explicit skill invocation": "$goal-mode",
         "validation command": "python tests/validate_skill.py",
+        "scenario validation command": "python tests/goal_mode_scenarios.py",
         "releases link": "https://github.com/novcky/codex-goal-mode-skill/releases",
         "issues link": "https://github.com/novcky/codex-goal-mode-skill/issues",
         "repository license link": "[LICENSE](LICENSE)",
@@ -258,6 +269,8 @@ def main() -> None:
     require(readme_en, "references/goal-workflow.md", "English README repository structure")
     require(readme_zh, "official_validate.py", "Chinese README official validator script")
     require(readme_en, "official_validate.py", "English README official validator script")
+    require(readme_zh, "goal_mode_scenarios.py", "Chinese README scenario validator script")
+    require(readme_en, "goal_mode_scenarios.py", "English README scenario validator script")
     require(readme_zh, "CONTRIBUTING.md", "Chinese README contributing link")
     require(readme_en, "CONTRIBUTING.md", "English README contributing link")
     require(readme_zh, "SECURITY.md", "Chinese README security link")
@@ -312,6 +325,10 @@ def main() -> None:
     require(readme_en, "goal-N final review: complete", "English README final-review commit message")
     require(readme_zh, "goal-N checkpoint after task M: complete", "Chinese README checkpoint commit message")
     require(readme_en, "goal-N checkpoint after task M: complete", "English README checkpoint commit message")
+    require(readme_zh, "短证据摘要", "Chinese README evidence digest")
+    require(readme_en, "short evidence digest", "English README evidence digest")
+    require(readme_zh, "no-profile 或 non-login shell", "Chinese README no-profile retry")
+    require(readme_en, "no-profile or non-login shell", "English README no-profile retry")
     if "goal-N task final: Final Review" in readme_zh + readme_en:
         fail("README must not document the old task-final commit format")
     if "v0.2.0/skills/goal-mode" in readme_zh or "v0.2.0/skills/goal-mode" in readme_en:
@@ -323,6 +340,7 @@ def main() -> None:
     require(contributing, "## English", "contributing doc English section")
     require(contributing, "python tests/validate_skill.py", "contributing repository validator command")
     require(contributing, "python tests/install_smoke.py", "contributing install smoke command")
+    require(contributing, "python tests/goal_mode_scenarios.py", "contributing scenario validator command")
     require(contributing, "python -m pip install pyyaml", "contributing pyyaml command")
     require(contributing, "python tests/official_validate.py", "contributing official validator command")
     require(contributing, "pre-release", "contributing prerelease policy")
@@ -336,6 +354,7 @@ def main() -> None:
     require(official_validate, "DOWNLOAD_TIMEOUT_SECONDS = 20", "official validator download timeout")
     require(official_validate, "RUN_TIMEOUT_SECONDS = 30", "official validator run timeout")
     require(workflow, "python tests/official_validate.py", "workflow official validator wrapper")
+    require(workflow, "python tests/goal_mode_scenarios.py", "workflow scenario validator")
     require(workflow, "actions/checkout@v6", "workflow checkout action")
     require(workflow, "actions/setup-python@v6", "workflow setup-python action")
     if "curl -fsSL" in contributing or "/tmp/quick_validate.py" in contributing:
@@ -350,6 +369,20 @@ def main() -> None:
         "security private vulnerability report link",
     )
     require(security, "https://github.com/novcky/codex-goal-mode-skill/issues", "security issue fallback link")
+
+    require(scenario_validate, "class GoalModePolicy", "scenario validator policy model")
+    require(scenario_validate, "expected_action", "scenario validator expected action assertion")
+    require(scenario_validate, "expected_must_stop", "scenario validator expected stop assertion")
+    require(scenario_validate, "expected_forbidden_next", "scenario validator forbidden next assertion")
+    require(scenario_validate, "mark_goal_complete_and_stop", "scenario validator terminal final review action")
+    require(scenario_validate, "goal_context initialization stops before Task 1", "scenario validator initialization case")
+    require(scenario_validate, "compaction requires full goal-file reread", "scenario validator compaction case")
+    require(scenario_validate, "task boundary commit stops before checkpoint", "scenario validator task boundary case")
+    require(scenario_validate, "checkpoint tracking commit stops before final review", "scenario validator checkpoint case")
+    require(scenario_validate, "final review requires verified tracking commit before completion", "scenario validator final review case")
+    require(scenario_validate, "final review blocks completion when tracking commit is missing", "scenario validator missing tracking commit case")
+    require(scenario_validate, "final review blocks completion when verification is missing", "scenario validator blocked final review case")
+    require(scenario_validate, "final review blocks completion when high-risk issue remains", "scenario validator high-risk final review case")
 
     disallowed_skill_files = {"README.md", "INSTALLATION_GUIDE.md", "QUICK_REFERENCE.md", "CHANGELOG.md"}
     for path in SKILL_DIR.rglob("*"):

@@ -51,6 +51,8 @@ rm -rf ~/.codex/skills/goal-mode
 - 后续进度说明、任务记录和最终报告会沿用该语言；`GOAL_INIT_DONE`、文件路径、命令、错误输出和 commit 标记等机器文本保持原样。
 - 同时会维护项目根目录的 `goal-current`，用于后续会话恢复当前活动目标。
 - 后续每轮会读取这三份文件，只推进 `tasks.md` 中的一个未完成任务，并记录验证证据、剩余风险和下一步。
+- 任务、checkpoint 和最终审核记录会保留短证据摘要，引用命令、提交、文件和风险，避免复制大段输出导致长期目标文件膨胀。
+- 在 Windows/WSL 证据采集时优先使用 `pwsh -NoProfile` 或 `powershell -NoProfile`；遇到 shell profile 噪音时先用 no-profile 或 non-login shell 复核。
 - 如果当前项目是 git 仓库且某个 task 修改了代码，验证通过并更新 `tasks.md` 后会创建一次 task 边界提交。
 - 如果仓库 hook 拒绝默认的 goal-mode commit 标题，会改用仓库接受的标题，并在 commit body 和 `tasks.md` 保留 `Goal-mode boundary:` 边界标记。
 - 每次 task 边界提交、跳过提交或提交失败记录之后都会停止；checkpoint 和最终审核会在后续会话中单独执行。
@@ -70,6 +72,7 @@ skills/goal-mode/
 tests/
   validate_skill.py
   install_smoke.py
+  goal_mode_scenarios.py
   official_validate.py
 ```
 
@@ -85,9 +88,10 @@ tests/
 
 ```bash
 python tests/validate_skill.py
+python tests/goal_mode_scenarios.py
 ```
 
-如果你在本地习惯用 `uv`，也可以运行 `uv run python tests/validate_skill.py`。
+如果你在本地习惯用 `uv`，也可以运行 `uv run python tests/validate_skill.py` 和 `uv run python tests/goal_mode_scenarios.py`。
 
 贡献前的完整校验步骤见 [贡献指南](CONTRIBUTING.md)。
 

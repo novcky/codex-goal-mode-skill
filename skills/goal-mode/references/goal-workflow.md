@@ -21,6 +21,7 @@ Runtime Contract:
 - Do not ask the user questions; record assumptions and continue safely.
 - Before closing a task, verify with concrete evidence.
 - Update this tasks.md with work, evidence, risk, and next step.
+- Keep each task record compact with a short evidence digest; reference commands, commits, files, and risks instead of pasting long logs.
 - Briefly report, then stop so the client can auto-advance.
 - If a Red Flag appears, stop task execution and repair the workflow state first.
 ```
@@ -96,8 +97,11 @@ goal-N/plan.md
 goal-N/tasks.md
 ```
 
+After compaction, treat prior transcript history as incomplete. Rebuild context from these files plus concrete current-state evidence such as git status, diffs, tests, logs, rendered output, or external tool results.
+
 3. Read the persisted `Language policy` from `plan.md` or `tasks.md` and use it for user-facing text in this session.
 4. In a git repository, inspect the worktree with `git status --short` before task, checkpoint, or final-review work. Use `pwsh -NoProfile` or `powershell -NoProfile` for PowerShell checks and scripts on Windows.
+   - If shell profile startup noise, access-denied profile scripts, or login-shell wrappers pollute evidence commands, retry with a no-profile or non-login shell when available. Record the environment friction only if it affects validation evidence.
    - Allowed dirty state is limited to active goal-mode tracking leftovers that the workflow explicitly knows how to repair: uncommitted initialization files before Task 1, uncommitted active `goal-N/tasks.md` checkpoint/final-review tracking updates, or `goal-current` pointing at the active goal.
    - If any other modified, deleted, or untracked file is present, treat it as user or unrelated work. Record a blocker in `tasks.md`, do not edit implementation files, do not stage or commit the unrelated files, and stop.
    - If the dirty state is an allowed tracking leftover, repair that boundary first and stop when the repair rule says to stop.
@@ -155,6 +159,7 @@ Before closing a task, verify and record:
 
 - Scope check: only the intended task was executed.
 - Evidence check: validation evidence exists and is named in `tasks.md`.
+- Compaction evidence digest: summarize what changed, exact validation commands or artifacts, related commit or commit-skip fact, remaining risk, and next step in a few durable lines.
 - State check: code changes, commits, and `tasks.md` agree with each other.
 - Risk check: remaining risk and next step are explicit.
 - AAR check: record any new trap, missing rule, outdated assumption, or repeated failure pattern discovered during the task.
@@ -184,6 +189,8 @@ If the checkpoint only updates `tasks.md` inside a git repository, create one ch
 
 During a checkpoint-only session, do not edit `plan.md`, `input.md`, or implementation files. If a checkpoint discovers tracking drift, stale project paths, or documentation mismatch outside `tasks.md`, record the finding and next action in `tasks.md` instead of changing those files. Stage only `goal-N/tasks.md` for the checkpoint tracking commit. After committing, verify `git log -1 --format=%s%n%b` shows `goal-N checkpoint after task M: complete` or the matching `Goal-mode boundary:` marker before reporting success. If the commit is missing, update `tasks.md` to record the commit failure and stop; do not leave `tasks.md` claiming the checkpoint commit exists.
 
+Checkpoint records should be short enough to survive long-goal rereads: name the checks, results, commit evidence, and residual risk, but avoid pasting long command output unless the exact output is the evidence.
+
 ## Final Review
 
 When all tasks are complete, run the largest final review before marking the goal complete. Review the user-facing behavior, code quality, security, data consistency, permissions, error handling, tests, build, documentation, and rollback path.
@@ -191,6 +198,8 @@ When all tasks are complete, run the largest final review before marking the goa
 Fix known high-risk issues by inserting follow-up repair tasks in `tasks.md` and stopping; do not patch implementation files inside the final-review session. When no high-risk issue remains, rerun relevant validation, update `tasks.md`, and set `Goal status: complete`. If this final review only changed `tasks.md` inside a git repository, create one final-review tracking commit with the Commit Hook Compatibility policy; do not use `goal-N task final: Final Review`. Before committing, write durable final-review commit-status text that records the actual subject and the goal-mode boundary marker; do not commit pending, ready-to-commit, or to-be-created wording. After committing, verify `git log -1 --format=%s%n%b` shows `goal-N final review: complete` or the matching `Goal-mode boundary:` marker before reporting success or marking the goal complete. If there is no git repository, record `Commit skipped: not a git repository`; if the commit fails or the latest commit does not match, record the failure in `tasks.md` and stop before marking the goal complete.
 
 After final-review tracking is committed or skipped, mark the registered goal complete with available goal tooling such as `update_goal`. After the final report, stop output. The client should not continue advancing after the goal is complete.
+
+Final review must leave a compact audit digest in `tasks.md` so a future reader can verify completion from goal files, git log, and named validation artifacts without decrypting or replaying the original session transcript.
 
 Future directory-layout migration note: this version intentionally keeps project-root `goal-current` and `goal-N/`. If a later version moves state under `.goal-mode/`, it must continue reading and safely resuming existing root-level goals.
 
