@@ -16,7 +16,7 @@ $skill-installer install https://github.com/novcky/codex-goal-mode-skill/tree/ma
 
 Restart Codex after installation so the new skill is loaded.
 
-To pin a specific version, choose the corresponding tag under [Releases](https://github.com/novcky/codex-goal-mode-skill/releases).
+To pin a specific version or try a pre-release, choose the corresponding tag under [Releases](https://github.com/novcky/codex-goal-mode-skill/releases).
 
 ## Update
 

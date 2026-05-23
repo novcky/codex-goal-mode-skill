@@ -133,6 +133,8 @@ def main() -> None:
         "strict initialization boundary": "The initialization turn must not edit target project files, validate task work, execute Task 1, close tasks, or run final review.",
         "same-session task red flag": "you are about to execute Task 1 in the same session that created `goal-current` or `goal-N/`",
         "goal pointer": "goal-current",
+        "dirty worktree core contract": "Guard against pre-existing worktree changes before task, checkpoint, or final-review work.",
+        "dirty worktree red flag": "`git status --short` shows user or unrelated changes",
         "automatic task-boundary commit": "Commit code changes at the task boundary when working inside a git repository",
         "tracking commit policy": "use checkpoint/final-review tracking commits for tracking-only `tasks.md` updates",
         "task final red flag": "you are about to use `goal-N task final: Final Review`",
@@ -140,6 +142,7 @@ def main() -> None:
         "checkpoint final review red flag": "run final review in the same session that created a checkpoint tracking commit",
         "checkpoint plan edit red flag": "modify `plan.md` or implementation files during a checkpoint-only session",
         "checkpoint missing commit red flag": "`tasks.md` claims a checkpoint commit exists but `git log -1` does not show that commit",
+        "final missing commit red flag": "`tasks.md` claims a final-review commit exists but `git log -1` does not show that commit",
         "durable commit status": "make its commit-status wording durable so it remains true after the commit",
         "pending commit status red flag": "commit status still saying pending, ready to commit, or to be created",
         "commit failure red flag": "task-boundary commit or a recorded commit failure",
@@ -190,6 +193,14 @@ def main() -> None:
         "commit failure handling": "If the commit fails, record the failure in `tasks.md` and stop instead of asking the user.",
         "one task rule": "Execute only one task per session.",
         "evidence rule": "Do not claim confidence without evidence.",
+        "dirty worktree runtime": "block on unrelated dirty worktree changes",
+        "dirty worktree allowed leftovers": "Allowed dirty state is limited to active goal-mode tracking leftovers",
+        "dirty worktree blocker": "Record a blocker in `tasks.md`, do not edit implementation files, do not stage or commit the unrelated files, and stop.",
+        "powershell no profile": "Use `pwsh -NoProfile` or `powershell -NoProfile`",
+        "checkpoint repair task": "Insert the next repair task in `tasks.md`",
+        "checkpoint no implementation fix": "do not fix implementation files in the checkpoint session",
+        "final review post commit": "verify `git log -1 --oneline` shows `goal-N final review: complete`",
+        "future layout migration note": "Future directory-layout migration note",
     }
     for label, phrase in required_reference_phrases.items():
         require(workflow_ref, phrase, label)
@@ -230,6 +241,8 @@ def main() -> None:
     require(readme_en, "does not overwrite an existing skill directory", "English README installer overwrite note")
     require(readme_zh, "重新运行上面的安装命令", "Chinese README update reinstall wording")
     require(readme_en, "run the install command above again", "English README update reinstall wording")
+    require(readme_zh, "预发布版本", "Chinese README prerelease wording")
+    require(readme_en, "pre-release", "English README prerelease wording")
     require(readme_zh, 'Remove-Item -Recurse -Force "$env:USERPROFILE\\.codex\\skills\\goal-mode"', "Chinese README Windows update remove command")
     require(readme_en, 'Remove-Item -Recurse -Force "$env:USERPROFILE\\.codex\\skills\\goal-mode"', "English README Windows update remove command")
     require(readme_zh, "rm -rf ~/.codex/skills/goal-mode", "Chinese README Unix update remove command")
@@ -273,6 +286,8 @@ def main() -> None:
     require(contributing, "python tests/install_smoke.py", "contributing install smoke command")
     require(contributing, "python -m pip install pyyaml", "contributing pyyaml command")
     require(contributing, "python tests/official_validate.py", "contributing official validator command")
+    require(contributing, "pre-release", "contributing prerelease policy")
+    require(contributing, "正式 Latest", "contributing stable promotion policy")
     require(official_validate, "e8acbcb5f86cef1e04b96eed7557148b719c5f6b", "official validator pinned commit")
     require(
         official_validate,

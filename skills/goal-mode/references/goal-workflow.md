@@ -9,6 +9,7 @@ Runtime Contract:
 - Resolve the active goal through goal-current before choosing work.
 - If this session created goal-current or goal-N files, stop with exactly GOAL_INIT_DONE.
 - At the start of every session, read input.md, plan.md, and tasks.md in full.
+- Before task, checkpoint, or final-review work in a git repository, block on unrelated dirty worktree changes.
 - Execute only the first incomplete task or required checkpoint.
 - Commit code changes at the task boundary when the project is a git repository.
 - Commit checkpoint-only tracking updates as `goal-N checkpoint after task M: complete` when the project is a git repository.
@@ -79,6 +80,11 @@ goal-N/plan.md
 goal-N/tasks.md
 ```
 
+3. In a git repository, inspect the worktree with `git status --short` before task, checkpoint, or final-review work. Use `pwsh -NoProfile` or `powershell -NoProfile` for PowerShell checks and scripts on Windows.
+   - Allowed dirty state is limited to active goal-mode tracking leftovers that the workflow explicitly knows how to repair: uncommitted initialization files before Task 1, uncommitted active `goal-N/tasks.md` checkpoint/final-review tracking updates, or `goal-current` pointing at the active goal.
+   - If any other modified, deleted, or untracked file is present, treat it as user or unrelated work. Record a blocker in `tasks.md`, do not edit implementation files, do not stage or commit the unrelated files, and stop.
+   - If the dirty state is an allowed tracking leftover, repair that boundary first and stop when the repair rule says to stop.
+
 Then:
 
 1. List a small todo/checklist for the current session and register it with available task tooling.
@@ -102,6 +108,7 @@ Do not claim confidence without evidence. Evidence can include tests, builds, ty
 - Principle: Scope control. Check: Did new scope appear that was not in `input.md` or `plan.md`? If yes, record an assumption before continuing.
 - Principle: Goal resolution. Check: Did this session resolve the active goal from `goal-current`, or repair it by selecting the highest-numbered incomplete goal? If no, stop before touching implementation.
 - Principle: Initialization boundary. Check: Did this session create goal files and also execute Task 1? If yes, stop and repair the workflow state.
+- Principle: Dirty worktree guard. Check: Did `git status --short` show unrelated work before this session changed files? If yes, record a blocker and stop without staging or committing it.
 - Principle: Commit control. Check: Did this session change code or complete a checkpoint/final-review tracking update in a git repo without the matching tracking commit or recorded commit failure? If yes, stop and repair the workflow state.
 - Principle: Durable commit status. Check: Would the committed `tasks.md` still say the commit is pending, ready to commit, or to be created after the commit succeeds? If yes, fix the wording before committing.
 - Principle: Compaction resilience. Check: Did this session read `input.md`, `plan.md`, and `tasks.md` in full? If no, read them before touching implementation.
@@ -135,6 +142,8 @@ After every three completed tasks, run a major check/debug loop before continuin
 
 Fix high-risk issues discovered by the checkpoint before moving on, staying within the goal scope.
 
+If the checkpoint finds a bug, requirement drift, documentation mismatch, high-risk issue, or stale context outside `tasks.md`, do not fix implementation files in the checkpoint session. Insert the next repair task in `tasks.md`, record the evidence and risk, create the checkpoint tracking commit, and stop. The next goal-mode session must execute that repair as an ordinary task-boundary commit.
+
 If the checkpoint only updates `tasks.md` inside a git repository, create one checkpoint tracking commit before moving on. Use message `goal-N checkpoint after task M: complete`, where `M` is the completed task count that triggered the checkpoint. Before committing, write durable checkpoint commit-status text such as `Commit status: included in checkpoint tracking commit message "goal-N checkpoint after task M: complete"`; do not commit pending, ready-to-commit, or to-be-created wording. If there is no git repository, record `Commit skipped: not a git repository`; if the commit fails, record the failure in `tasks.md` and stop before moving on. After the checkpoint tracking commit succeeds or is skipped, stop immediately; final review must wait for the next goal-mode session.
 
 During a checkpoint-only session, do not edit `plan.md`, `input.md`, or implementation files. If a checkpoint discovers tracking drift, stale project paths, or documentation mismatch outside `tasks.md`, record the finding and next action in `tasks.md` instead of changing those files. Stage only `goal-N/tasks.md` for the checkpoint tracking commit. After committing, verify `git log -1 --oneline` shows `goal-N checkpoint after task M: complete` before reporting success. If the commit is missing, update `tasks.md` to record the commit failure and stop; do not leave `tasks.md` claiming the checkpoint commit exists.
@@ -143,9 +152,11 @@ During a checkpoint-only session, do not edit `plan.md`, `input.md`, or implemen
 
 When all tasks are complete, run the largest final review before marking the goal complete. Review the user-facing behavior, code quality, security, data consistency, permissions, error handling, tests, build, documentation, and rollback path.
 
-Fix known high-risk issues, rerun relevant validation, update `tasks.md`, and set `Goal status: complete`. If this final review only changed `tasks.md` inside a git repository, create one final-review tracking commit with message `goal-N final review: complete`; do not use `goal-N task final: Final Review`. Before committing, write durable final-review commit-status text such as `Commit status: included in final-review tracking commit message "goal-N final review: complete"`; do not commit pending, ready-to-commit, or to-be-created wording. If there is no git repository, record `Commit skipped: not a git repository`; if the commit fails, record the failure in `tasks.md` and stop before marking the goal complete.
+Fix known high-risk issues by inserting follow-up repair tasks in `tasks.md` and stopping; do not patch implementation files inside the final-review session. When no high-risk issue remains, rerun relevant validation, update `tasks.md`, and set `Goal status: complete`. If this final review only changed `tasks.md` inside a git repository, create one final-review tracking commit with message `goal-N final review: complete`; do not use `goal-N task final: Final Review`. Before committing, write durable final-review commit-status text such as `Commit status: included in final-review tracking commit message "goal-N final review: complete"`; do not commit pending, ready-to-commit, or to-be-created wording. After committing, verify `git log -1 --oneline` shows `goal-N final review: complete` before reporting success or marking the goal complete. If there is no git repository, record `Commit skipped: not a git repository`; if the commit fails or the latest commit does not match, record the failure in `tasks.md` and stop before marking the goal complete.
 
 After final-review tracking is committed or skipped, mark the registered goal complete with available goal tooling such as `update_goal`. After the final report, stop output. The client should not continue advancing after the goal is complete.
+
+Future directory-layout migration note: this version intentionally keeps project-root `goal-current` and `goal-N/`. If a later version moves state under `.goal-mode/`, it must continue reading and safely resuming existing root-level goals.
 
 ## Rationalizations to Reject
 
@@ -164,6 +175,9 @@ Reject these before they turn into drift:
 - "The checkpoint commit succeeded, so I can run final review in the same session."
 - "I can fix plan.md during a checkpoint because it is only tracking metadata."
 - "The checkpoint commit probably succeeded, so tasks.md can say it exists."
+- "The worktree is dirty, but those changes are probably related."
+- "Final review can patch the implementation because the fix is obvious."
+- "The final-review commit probably succeeded, so tasks.md can say it exists."
 - "Final review is basically a task, so `goal-N task final: Final Review` is fine."
 - "I'll leave commit status as pending and fix it after the commit."
 

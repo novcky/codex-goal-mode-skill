@@ -16,7 +16,7 @@ $skill-installer install https://github.com/novcky/codex-goal-mode-skill/tree/ma
 
 安装后重启 Codex，让新 Skill 生效。
 
-需要固定到某个版本时，可在 [Releases](https://github.com/novcky/codex-goal-mode-skill/releases) 中选择对应 tag。
+需要固定到某个版本或试用预发布版本时，可在 [Releases](https://github.com/novcky/codex-goal-mode-skill/releases) 中选择对应 tag。
 
 ## 更新
 
