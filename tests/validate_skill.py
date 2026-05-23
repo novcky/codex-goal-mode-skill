@@ -133,15 +133,19 @@ def main() -> None:
         "strict initialization boundary": "The initialization turn must not edit target project files, validate task work, execute Task 1, close tasks, or run final review.",
         "same-session task red flag": "you are about to execute Task 1 in the same session that created `goal-current` or `goal-N/`",
         "goal pointer": "goal-current",
+        "language policy core contract": "Persist and follow a `zh-CN` or `en-US` language policy",
         "dirty worktree core contract": "Guard against pre-existing worktree changes before task, checkpoint, or final-review work.",
         "deliverable splitting core contract": "Split explicitly named deliverables into separate independently verifiable tasks during initialization.",
         "dirty worktree red flag": "`git status --short` shows user or unrelated changes",
         "automatic task-boundary commit": "Commit code changes at the task boundary when working inside a git repository",
         "tracking commit policy": "use checkpoint/final-review tracking commits for tracking-only `tasks.md` updates",
+        "commit hook compatibility": "keep the goal-mode boundary marker in the commit body and `tasks.md`",
         "task boundary stop core contract": "After any task-boundary commit, task commit skip, or task commit failure, stop immediately",
         "task final review red flag": "run a checkpoint or final review in the same session that completed a task boundary",
         "deliverable merge red flag": "merge multiple explicitly named deliverables into one task",
         "task final red flag": "you are about to use `goal-N task final: Final Review`",
+        "language policy red flag": "you are about to ignore the persisted `Language policy`",
+        "commit hook red flag": "without a `Goal-mode boundary:` marker in the body",
         "checkpoint tracking red flag": "checkpoint tracking commit or recorded commit failure",
         "checkpoint final review red flag": "run final review in the same session that created a checkpoint tracking commit",
         "checkpoint plan edit red flag": "modify `plan.md` or implementation files during a checkpoint-only session",
@@ -158,7 +162,9 @@ def main() -> None:
     required_reference_phrases = {
         "runtime contract": "## Runtime Contract",
         "initialization turn": "## Initialization Turn",
+        "language policy section": "## Language Policy",
         "session loop": "## Session Loop",
+        "commit hook compatibility section": "## Commit Hook Compatibility",
         "principles and checks": "## Principles and Checks",
         "check sentence": "Check:",
         "task closure protocol": "## Task Closure Protocol",
@@ -170,6 +176,13 @@ def main() -> None:
         "goal pointer": "goal-current",
         "goal active status": "Goal status: active",
         "goal complete status": "Goal status: complete",
+        "language policy zh": "Language policy: zh-CN",
+        "language policy en": "Language policy: en-US",
+        "language policy persisted": "Choose one language policy per goal during initialization and keep it for the entire goal",
+        "language default Chinese": "If the prompt contains Chinese characters, choose `zh-CN`.",
+        "mixed language default Chinese": "If the prompt is mixed or uncertain, choose `zh-CN`.",
+        "plain English default": "If the prompt is plain English, choose `en-US`.",
+        "fixed machine tokens": "Keep fixed machine tokens, paths, commands, error output, git subjects, and goal-mode markers unchanged",
         "strict init runtime contract": "If this session created goal-current or goal-N files, stop with exactly GOAL_INIT_DONE.",
         "strict init no combining": "Do not combine initialization with task execution, even for tiny goals.",
         "strict init task ban": "do not edit target project files, run task validation, close tasks, perform final review, create commits, or mark the goal complete",
@@ -181,21 +194,27 @@ def main() -> None:
         "checkpoint commit policy": "Commit checkpoint-only tracking updates as `goal-N checkpoint after task M: complete` when the project is a git repository.",
         "final review commit policy": "Commit final-review-only tracking updates as `goal-N final review: complete` when the project is a git repository.",
         "task-boundary commit format": "goal-N task M: <task title>",
+        "commit hook rejected literal": "If a repository hook, commitlint, or Conventional Commit rule rejects the literal subject",
+        "goal mode boundary marker": "Goal-mode boundary: goal-N task M: <task title>",
+        "checkpoint boundary marker": "Goal-mode boundary: goal-N checkpoint after task M: complete",
+        "final boundary marker": "Goal-mode boundary: goal-N final review: complete",
+        "commit body verification": "git log -1 --format=%s%n%b",
+        "actual subject tasks record": "Record both the actual commit subject and the goal-mode boundary marker in `tasks.md`.",
         "task boundary stop": "After the task-boundary commit succeeds, the non-git task skip is recorded, or the commit failure is recorded, stop immediately.",
         "no checkpoint final after task": "Do not run a checkpoint or final review in the same session that completed a task boundary",
         "first task includes init files": "include the untracked initialization files from the initialization turn",
         "checkpoint commit format": "goal-N checkpoint after task M: complete",
-        "durable checkpoint commit status": 'Commit status: included in checkpoint tracking commit message "goal-N checkpoint after task M: complete"',
+        "durable checkpoint commit status": "write durable checkpoint commit-status text that records the actual subject and the goal-mode boundary marker",
         "checkpoint repair rule": "If a previous checkpoint is already marked complete in `tasks.md` but its tracking update is uncommitted",
         "checkpoint stop rule": "After the checkpoint tracking commit succeeds or is skipped, stop immediately; final review must wait for the next goal-mode session.",
         "checkpoint scope rule": "During a checkpoint-only session, do not edit `plan.md`, `input.md`, or implementation files.",
         "checkpoint stage only tasks": "Stage only `goal-N/tasks.md` for the checkpoint tracking commit.",
-        "checkpoint commit verification": "After committing, verify `git log -1 --oneline` shows `goal-N checkpoint after task M: complete` before reporting success.",
+        "checkpoint commit verification": "verify `git log -1 --format=%s%n%b` shows `goal-N checkpoint after task M: complete` or the matching `Goal-mode boundary:` marker",
         "final review commit format": "goal-N final review: complete",
         "task final banned": "do not use `goal-N task final: Final Review`",
         "durable commit status runtime": "Commit-status text in tasks.md must remain true after the commit",
-        "durable task commit status": 'Commit status: included in task-boundary commit message "goal-N task M: <task title>"',
-        "durable final commit status": 'Commit status: included in final-review tracking commit message "goal-N final review: complete"',
+        "durable task commit status": "write durable commit-status text that records the actual subject and the goal-mode boundary marker",
+        "durable final commit status": "write durable final-review commit-status text that records the actual subject and the goal-mode boundary marker",
         "pending commit status banned": "do not commit pending, ready-to-commit, or to-be-created wording",
         "commit skipped non-git": "Commit skipped: not a git repository",
         "commit failure handling": "If the commit fails, record the failure in `tasks.md` and stop instead of asking the user.",
@@ -209,7 +228,7 @@ def main() -> None:
         "powershell no profile": "Use `pwsh -NoProfile` or `powershell -NoProfile`",
         "checkpoint repair task": "Insert the next repair task in `tasks.md`",
         "checkpoint no implementation fix": "do not fix implementation files in the checkpoint session",
-        "final review post commit": "verify `git log -1 --oneline` shows `goal-N final review: complete`",
+        "final review post commit": "verify `git log -1 --format=%s%n%b` shows `goal-N final review: complete` or the matching `Goal-mode boundary:` marker",
         "future layout migration note": "Future directory-layout migration note",
     }
     for label, phrase in required_reference_phrases.items():
@@ -273,6 +292,14 @@ def main() -> None:
     require(readme_en, "goal_context", "English README internal goal context note")
     require(readme_zh, "GOAL_INIT_DONE", "Chinese README strict init output")
     require(readme_en, "GOAL_INIT_DONE", "English README strict init output")
+    require(readme_zh, "Language policy: zh-CN", "Chinese README zh language policy")
+    require(readme_en, "Language policy: zh-CN", "English README zh language policy")
+    require(readme_zh, "Language policy: en-US", "Chinese README en language policy")
+    require(readme_en, "Language policy: en-US", "English README en language policy")
+    require(readme_zh, "中文或中英混合目标默认中文", "Chinese README Chinese default language")
+    require(readme_en, "Chinese or mixed Chinese/English goals default to Chinese", "English README Chinese default language")
+    require(readme_zh, "Goal-mode boundary:", "Chinese README commit hook boundary marker")
+    require(readme_en, "Goal-mode boundary:", "English README commit hook boundary marker")
     require(readme_zh, "后续会话才开始执行 Task 1", "Chinese README delayed task execution")
     require(readme_en, "later sessions start Task 1", "English README delayed task execution")
     require(readme_zh, "task 边界提交", "Chinese README task-boundary commit policy")

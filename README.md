@@ -47,9 +47,12 @@ rm -rf ~/.codex/skills/goal-mode
 - 首次 `/goal` 会在当前项目根目录创建 `goal-N/input.md`、`goal-N/plan.md` 和 `goal-N/tasks.md`。
 - 兼容 Codex 将 `/goal` 转换成内部 `goal_context` 的会话形态。
 - 首轮只初始化 goal 文件，最后只输出 `GOAL_INIT_DONE`；后续会话才开始执行 Task 1。
+- 初始化时会记录 `Language policy: zh-CN` 或 `Language policy: en-US`；中文或中英混合目标默认中文，英文目标默认英文。
+- 后续进度说明、任务记录和最终报告会沿用该语言；`GOAL_INIT_DONE`、文件路径、命令、错误输出和 commit 标记等机器文本保持原样。
 - 同时会维护项目根目录的 `goal-current`，用于后续会话恢复当前活动目标。
 - 后续每轮会读取这三份文件，只推进 `tasks.md` 中的一个未完成任务，并记录验证证据、剩余风险和下一步。
 - 如果当前项目是 git 仓库且某个 task 修改了代码，验证通过并更新 `tasks.md` 后会创建一次 task 边界提交。
+- 如果仓库 hook 拒绝默认的 goal-mode commit 标题，会改用仓库接受的标题，并在 commit body 和 `tasks.md` 保留 `Goal-mode boundary:` 边界标记。
 - 每次 task 边界提交、跳过提交或提交失败记录之后都会停止；checkpoint 和最终审核会在后续会话中单独执行。
 - 首轮初始化文件不会单独提交；在 git 仓库中，它们会随第一个 task 边界提交进入版本库。
 - 如果 checkpoint 只更新 `tasks.md`，会使用 `goal-N checkpoint after task M: complete` 创建 checkpoint 跟踪提交。

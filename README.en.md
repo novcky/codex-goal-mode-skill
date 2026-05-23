@@ -47,9 +47,12 @@ The installed skill name is `goal-mode`, and the explicit skill invocation is `$
 - The first `/goal` turn creates `goal-N/input.md`, `goal-N/plan.md`, and `goal-N/tasks.md` under the current project root.
 - It handles Codex sessions where `/goal` is transformed into an internal `goal_context` message.
 - The first turn only initializes goal files and outputs exactly `GOAL_INIT_DONE`; later sessions start Task 1.
+- Initialization records `Language policy: zh-CN` or `Language policy: en-US`; Chinese or mixed Chinese/English goals default to Chinese, and English goals default to English.
+- Later progress updates, task records, and final reports keep that language; machine text such as `GOAL_INIT_DONE`, paths, commands, error output, and commit markers stays unchanged.
 - It also maintains a project-root `goal-current` pointer so later sessions can resume the active goal.
 - Later turns read those three files, advance only one incomplete task from `tasks.md`, and record validation evidence, remaining risk, and the next step.
 - If the current project is a git repository and a task changes code, it creates one task-boundary commit after validation and the `tasks.md` update.
+- If a repository hook rejects the default goal-mode commit subject, it uses a repository-accepted subject and preserves the `Goal-mode boundary:` marker in the commit body and `tasks.md`.
 - After each task-boundary commit, commit skip, or commit failure record, it stops; checkpoints and final review run in later sessions.
 - Initialization files are not committed on the first turn; in git repositories, they are included in the first task-boundary commit.
 - If a checkpoint only updates `tasks.md`, it creates a checkpoint tracking commit named `goal-N checkpoint after task M: complete`.
