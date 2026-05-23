@@ -134,9 +134,13 @@ def main() -> None:
         "same-session task red flag": "you are about to execute Task 1 in the same session that created `goal-current` or `goal-N/`",
         "goal pointer": "goal-current",
         "dirty worktree core contract": "Guard against pre-existing worktree changes before task, checkpoint, or final-review work.",
+        "deliverable splitting core contract": "Split explicitly named deliverables into separate independently verifiable tasks during initialization.",
         "dirty worktree red flag": "`git status --short` shows user or unrelated changes",
         "automatic task-boundary commit": "Commit code changes at the task boundary when working inside a git repository",
         "tracking commit policy": "use checkpoint/final-review tracking commits for tracking-only `tasks.md` updates",
+        "task boundary stop core contract": "After any task-boundary commit, task commit skip, or task commit failure, stop immediately",
+        "task final review red flag": "run a checkpoint or final review in the same session that completed a task boundary",
+        "deliverable merge red flag": "merge multiple explicitly named deliverables into one task",
         "task final red flag": "you are about to use `goal-N task final: Final Review`",
         "checkpoint tracking red flag": "checkpoint tracking commit or recorded commit failure",
         "checkpoint final review red flag": "run final review in the same session that created a checkpoint tracking commit",
@@ -169,12 +173,16 @@ def main() -> None:
         "strict init runtime contract": "If this session created goal-current or goal-N files, stop with exactly GOAL_INIT_DONE.",
         "strict init no combining": "Do not combine initialization with task execution, even for tiny goals.",
         "strict init task ban": "do not edit target project files, run task validation, close tasks, perform final review, create commits, or mark the goal complete",
+        "deliverable splitting": "Split explicitly named deliverables into separate tasks",
+        "three deliverable checkpoint coverage": "For a goal that names three or more deliverables, create at least three implementation tasks so the Task 3 checkpoint can run.",
         "goal_context objective extraction": "write the `objective` text as the goal prompt",
         "goal_context source note": "Source: Codex goal_context",
         "commit policy": "commit code changes at the task boundary when the project is a git repository",
         "checkpoint commit policy": "Commit checkpoint-only tracking updates as `goal-N checkpoint after task M: complete` when the project is a git repository.",
         "final review commit policy": "Commit final-review-only tracking updates as `goal-N final review: complete` when the project is a git repository.",
         "task-boundary commit format": "goal-N task M: <task title>",
+        "task boundary stop": "After the task-boundary commit succeeds, the non-git task skip is recorded, or the commit failure is recorded, stop immediately.",
+        "no checkpoint final after task": "Do not run a checkpoint or final review in the same session that completed a task boundary",
         "first task includes init files": "include the untracked initialization files from the initialization turn",
         "checkpoint commit format": "goal-N checkpoint after task M: complete",
         "durable checkpoint commit status": 'Commit status: included in checkpoint tracking commit message "goal-N checkpoint after task M: complete"',
@@ -192,6 +200,8 @@ def main() -> None:
         "commit skipped non-git": "Commit skipped: not a git repository",
         "commit failure handling": "If the commit fails, record the failure in `tasks.md` and stop instead of asking the user.",
         "one task rule": "Execute only one task per session.",
+        "stop after task principle": "Principle: Stop after task boundary.",
+        "deliverable splitting principle": "Principle: Deliverable splitting.",
         "evidence rule": "Do not claim confidence without evidence.",
         "dirty worktree runtime": "block on unrelated dirty worktree changes",
         "dirty worktree allowed leftovers": "Allowed dirty state is limited to active goal-mode tracking leftovers",
@@ -267,6 +277,8 @@ def main() -> None:
     require(readme_en, "later sessions start Task 1", "English README delayed task execution")
     require(readme_zh, "task 边界提交", "Chinese README task-boundary commit policy")
     require(readme_en, "task-boundary commit", "English README task-boundary commit policy")
+    require(readme_zh, "checkpoint 和最终审核会在后续会话中单独执行", "Chinese README stop after task boundary")
+    require(readme_en, "checkpoints and final review run in later sessions", "English README stop after task boundary")
     require(readme_zh, "首轮初始化文件不会单独提交", "Chinese README initialization commit policy")
     require(readme_en, "Initialization files are not committed on the first turn", "English README initialization commit policy")
     require(readme_zh, "goal-N final review: complete", "Chinese README final-review commit message")

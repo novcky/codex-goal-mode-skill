@@ -14,6 +14,7 @@ Runtime Contract:
 - Commit code changes at the task boundary when the project is a git repository.
 - Commit checkpoint-only tracking updates as `goal-N checkpoint after task M: complete` when the project is a git repository.
 - Commit final-review-only tracking updates as `goal-N final review: complete` when the project is a git repository.
+- After any task-boundary commit, task commit skip, or task commit failure, stop immediately; checkpoint and final review must wait for a later session.
 - Commit-status text in tasks.md must remain true after the commit; do not commit pending, ready-to-commit, or to-be-created wording.
 - Do not ask the user questions; record assumptions and continue safely.
 - Before closing a task, verify with concrete evidence.
@@ -44,7 +45,7 @@ goal-N/
 5. Write `plan.md` with the goal analysis, relevant context, risks, implementation approach, validation approach, rollback approach, necessary default assumptions, and commit approach.
 6. Start `tasks.md` with the Runtime Contract block above.
 7. Add `Goal status: active` and `Commit policy: commit code changes at the task boundary when the project is a git repository` to `tasks.md`.
-8. Continue `tasks.md` with small independently verifiable tasks. Prefer about 10 tasks for medium-sized work, fewer for very small work, and more for large work. Each task must reserve space for:
+8. Continue `tasks.md` with small independently verifiable tasks. Split explicitly named deliverables into separate tasks: if the user names separate files, docs, scripts, screens, APIs, or validation artifacts, create one task per deliverable or per tightly coupled deliverable group instead of merging them into a single broad task. For a goal that names three or more deliverables, create at least three implementation tasks so the Task 3 checkpoint can run. Prefer about 10 tasks for medium-sized work, fewer for very small single-deliverable work, and more for large work. Each task must reserve space for:
    - completion status
    - work performed
    - verification evidence
@@ -95,14 +96,17 @@ Then:
 6. Run the Task Closure Protocol before reporting.
 7. Update `tasks.md` for the completed task with work performed, verification evidence, remaining risk, next step, and commit status.
 8. If task execution changed code inside a git repository, create one task-boundary commit after validation and the `tasks.md` update. Use commit message `goal-N task M: <task title>` and include only task-related implementation files plus the relevant goal tracking update. For the first task commit, also include the untracked initialization files from the initialization turn. Before committing, write durable commit-status text such as `Commit status: included in task-boundary commit message "goal-N task M: <task title>"`; do not commit wording like pending, ready to commit, or to be created. If there is no git repository, record `Commit skipped: not a git repository` in `tasks.md`. If the commit fails, record the failure in `tasks.md` and stop instead of asking the user.
-9. If a previous checkpoint is already marked complete in `tasks.md` but its tracking update is uncommitted, create the checkpoint tracking commit and stop immediately. Use commit message `goal-N checkpoint after task M: complete`, where `M` is the completed task count that triggered the checkpoint. Final review must wait for the next goal-mode session.
-10. Briefly report progress to the user, then stop output so the client can auto-advance.
+9. After the task-boundary commit succeeds, the non-git task skip is recorded, or the commit failure is recorded, stop immediately. Do not run a checkpoint or final review in the same session that completed a task boundary, even if this was the last incomplete implementation task. The next required checkpoint or final review must wait for the next goal-mode continuation.
+10. If a previous checkpoint is already marked complete in `tasks.md` but its tracking update is uncommitted, create the checkpoint tracking commit and stop immediately. Use commit message `goal-N checkpoint after task M: complete`, where `M` is the completed task count that triggered the checkpoint. Final review must wait for the next goal-mode session.
+11. Briefly report progress to the user, then stop output so the client can auto-advance.
 
 Do not claim confidence without evidence. Evidence can include tests, builds, type checks, diffs, logs, manual UI checks, static analysis, or other concrete verification artifacts.
 
 ## Principles and Checks
 
 - Principle: One task per session. Check: Did this session modify, verify, or close a second incomplete task? If yes, stop and repair `tasks.md`.
+- Principle: Stop after task boundary. Check: Did this session complete a task-boundary commit, commit skip, or commit failure and then start checkpoint or final review? If yes, stop and repair `tasks.md`.
+- Principle: Deliverable splitting. Check: Did `tasks.md` merge multiple files, docs, scripts, screens, APIs, or validation artifacts that the user explicitly named? If yes, split them before executing Task 1.
 - Principle: Evidence before closure. Check: Is there named concrete evidence for the claimed result? If no, inspect, test, or review before reporting.
 - Principle: State synchronization. Check: Do code changes, commits, and `tasks.md` describe the same work? If no, fix the mismatch.
 - Principle: Scope control. Check: Did new scope appear that was not in `input.md` or `plan.md`? If yes, record an assumption before continuing.
@@ -167,6 +171,8 @@ Reject these before they turn into drift:
 - "Tests take too long."
 - "I already know it works."
 - "Let's just do the next task too."
+- "I finished the last task, so I can run final review now."
+- "The user named three files, but they are small enough to be one task."
 - "The user wants speed, so evidence can be light."
 - "This time the red flag does not really count."
 - "This is a tiny goal, so I can initialize and execute Task 1 in one session."

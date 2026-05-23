@@ -50,6 +50,7 @@ rm -rf ~/.codex/skills/goal-mode
 - 同时会维护项目根目录的 `goal-current`，用于后续会话恢复当前活动目标。
 - 后续每轮会读取这三份文件，只推进 `tasks.md` 中的一个未完成任务，并记录验证证据、剩余风险和下一步。
 - 如果当前项目是 git 仓库且某个 task 修改了代码，验证通过并更新 `tasks.md` 后会创建一次 task 边界提交。
+- 每次 task 边界提交、跳过提交或提交失败记录之后都会停止；checkpoint 和最终审核会在后续会话中单独执行。
 - 首轮初始化文件不会单独提交；在 git 仓库中，它们会随第一个 task 边界提交进入版本库。
 - 如果 checkpoint 只更新 `tasks.md`，会使用 `goal-N checkpoint after task M: complete` 创建 checkpoint 跟踪提交。
 - 如果最终审核只更新 `tasks.md`，会使用 `goal-N final review: complete` 创建 final-review 跟踪提交。
